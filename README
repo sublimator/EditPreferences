@@ -8,6 +8,6 @@ to python's std lib json parser)
 
 You'll also have to avoid trailing commas ( which ST3 now allows :/ )
 
-The Default keymaps bundled with sublime unfortunately allow trailing commas.
+Some of the keymaps bundled with sublime unfortunately contain trailing commas.
 
 TODO: Support fully sublime text variant of json.
