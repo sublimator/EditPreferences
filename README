@@ -1,0 +1,13 @@
+Some commands to list shortcut keys / settings etc in the QuickPanel and
+navigate to edit location on selection.
+
+Note, you'll need to make sure the JSON is reasonably well formed. 
+
+That means using only `//` style comments  (easily stripped before passing text
+to python's std lib json parser)
+
+You'll also have to avoid trailing commas ( which ST3 now allows :/ )
+
+The Default keymaps bundled with sublime unfortunately allow trailing commas.
+
+TODO: Support fully sublime text variant of json.
