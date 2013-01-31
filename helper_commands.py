@@ -5,6 +5,9 @@
 import sublime
 import sublime_plugin
 
+
+from .helpers import open_file_path
+
 ################################ HELPER COMMANDS ###############################
 
 class GotoLineNumber(sublime_plugin.TextCommand):
@@ -29,6 +32,9 @@ class SelectRegions(sublime_plugin.TextCommand):
 
 class OpenFileEnhanced(sublime_plugin.WindowCommand):
     def run(self, file, line=None, regions=None, **kw):
+        
+        file = open_file_path(file)
+        
         window = self.window
         kw['file'] = file
         window.run_command("open_file", kw)
