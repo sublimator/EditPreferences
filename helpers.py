@@ -232,7 +232,7 @@ def testicle():
     #         paths.pop()
 
 
-sublime.set_timeout(testicle)
+#sublime.set_timeout(testicle)
 
 ##################################### TODO #####################################
 
