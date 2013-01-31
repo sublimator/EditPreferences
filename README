@@ -10,4 +10,10 @@ You'll also have to avoid trailing commas ( which ST3 now allows :/ )
 
 Some of the keymaps bundled with sublime unfortunately contain trailing commas.
 
+Commands:
+
+    { "caption": "Edit Preference: List Settings",         "command": "list_settings"},
+    { "caption": "Edit Preference: List Plugins Commands", "command": "list_commands" },
+    { "caption": "Edit Preference: List Shortcut Keys",    "command": "list_shortcut_keys"}
+
 TODO: Support fully sublime text variant of json.
