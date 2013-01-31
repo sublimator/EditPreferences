@@ -23,6 +23,16 @@ PREFIX_ZIP_PACKAGE_RELATIVE = re.compile("(?P<prefix>.*)/"
 
 #################################### HELPERS ###################################
 
+def open_file_path(fn):
+    """
+    Formats a path as /C/some/path/on/windows/no/colon.txt that is suitable to
+    be passed as the `file` arg to the `open_file` command.
+    """
+    fn = normpath(fn)
+    fn = re.sub('^([a-zA-Z]):', '/\\1', fn)
+    fn = re.sub(r'\\', '/', fn)
+    return fn
+
 def view_related_packages(view):
     """
     
@@ -175,7 +185,10 @@ def list_package_dir(package_info):
 
     return contents
 
+# open_file_path
 def package_file_contents(fn):
+    fn = re.sub(r'\\', '/', fn)
+    
     m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn)
     if m is not None:
         zip_file = "%(prefix)s/%(package)s.sublime-package" % m.groupdict()
