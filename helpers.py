@@ -9,7 +9,7 @@ import zipfile
 
 from os.path import normpath, split, join, isdir, splitext, basename, dirname
 from collections import defaultdict
-from pprint import pprint
+# from pprint import pprint
 
 # Sublime Libs
 import sublime
@@ -239,7 +239,6 @@ def testicle():
     #     while len(paths) > 0:
     #         self.contents['.'.join(paths)] = ""
     #         paths.pop()
-
 
 # sublime.set_timeout(testicle)
 
