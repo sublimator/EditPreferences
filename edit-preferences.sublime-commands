@@ -1,11 +1,11 @@
 [
     { "caption": "Edit Preference: List Settings",          "command": "list_settings"},
-    { "caption": "Edit Preference: List Plugins Commands", "command": "list_commands" }
+    { "caption": "Edit Preference: List Plugins Commands", "command": "list_commands" },
+    { "caption": "Edit Preference: List Shortcut Keys",    "command": "list_shortcut_keys"}
 
     // COMMANDS THAT HAVENT BEEN PORTED TO ST3 YET
         
     // { "caption": "Edit Preference: List Menus",            "command": "list_menu_bindings"},
-    // { "caption": "Edit Preference: List Shortcut Keys",    "command": "list_shortcut_keys"},
 
     // { "caption": "Edit Preference: Theme",
     //   "command": "edit_package_files",

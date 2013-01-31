@@ -123,12 +123,14 @@ def contextual_packages_list(view=None):
         view = sublime.active_window().active_view()
 
     contextual = view_related_packages(view)
-
-    others = sorted((f["name"] for f in enumerate_installed_packages()
-                       if not f["name"] in contextual),
+    others = sorted(set((f["name"] for f in enumerate_installed_packages()
+                       if f["name"] not in contextual)),
                       key = lambda f: f.lower())
+    
+    ignored = set((sublime.load_settings('Preferences.sublime-settings')
+                         .get('ignored_packages')))
 
-    return contextual + others
+    return [f for f in (contextual + others) if f not in ignored]
 
 def list_package_dir(package_info):
     """
@@ -192,15 +194,22 @@ def testicle():
     # print (repr(the_view))
     # print (view_related_packages(the_view))
     # print ("FFFF")
+    from pprint import pprint
     # import pprint
     # pprint.pprint (enumerate_installed_packages())
-    # print (contextual_packages_list())
+    print (contextual_packages_list())
     # print (package_info_lookup())
 
 
     # path = "/home/nick/sublime_text_3/Packages/Default.sublime-package"
 
-    lookup = package_info_lookup()
+    # lookup = package_info_lookup()
+    # ff = list_package_dir(lookup["Default"])
+    
+    # pprint(ff)
+    
+    # for pkg, name, f in glob_packages('sublime-settings'):
+    #     print ("f", f, pkg)
 
     # pprint(lookup)
 
@@ -232,11 +241,12 @@ def testicle():
     #         paths.pop()
 
 
-sublime.set_timeout(testicle)
+# sublime.set_timeout(testicle)
 
 ##################################### TODO #####################################
 
 def glob_packages(file_type='sublime-keymap', view=None):
+    
     if isinstance(file_type, str):
         file_type = file_type.replace('%PLATFORM%', sublime.platform())
         if '.' not in file_type:
@@ -283,6 +293,8 @@ def normalise_to_open_file_path(file_name):
         return "${packages}/%(package)s/%(relative)s" % m.groupdict()
     else:
         return file_name
+
+# print (normalise_to_open_file_path('/home/nick/sublime_text_3/Packages/Vintage.sublime-package/Default (Linux).sublime-keymap'))
 
 def plugin_name(plug_class):
     """
@@ -332,3 +344,9 @@ class temporary_event_handler(object):
 
     def remove(self):
         sublime.set_timeout(lambda: self.callbacks.remove(self), 0)
+
+def select(view, region, show_surrounds=True):
+    sel_set = view.sel()
+    sel_set.clear()
+    sel_set.add(region)
+    view.show(region, show_surrounds)

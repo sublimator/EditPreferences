@@ -48,4 +48,6 @@ class OpenFileEnhanced(sublime_plugin.WindowCommand):
                 elif regions is not None:
                     open_file_view.run_command (
                         'select_regions', dict(regions=regions))
+                
+                window.focus_view(open_file_view)
         do()

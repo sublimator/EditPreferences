@@ -144,7 +144,7 @@ def make_scanner(context):
 
 class JSONIXDecoder(JSONDecoder):
     def __init__(self):
-        super(JSONIXDecoder, self).__init__()
+        super(JSONIXDecoder, self).__init__(strict=False)
         self.scan_once = make_scanner(self)
 
 @contextmanager

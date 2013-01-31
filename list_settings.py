@@ -49,7 +49,7 @@ class ListSettings(sublime_plugin.WindowCommand):
                 value = settings[i][-1]
                 fn    = settings[i][0]
                 fn    = normalise_to_open_file_path(fn)
-
+                
                 try:    regions = [list(value.__inner__())]
                 except: regions = [list(key.__inner__())]
 
