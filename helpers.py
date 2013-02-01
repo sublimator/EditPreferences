@@ -93,9 +93,6 @@ def view_related_packages(view):
     syntax_package = syntax.split('/')[1]
 
     dirs.append(syntax_package)
-    
-    print (dirs)
-
     return dirs
 
 def enumerate_installed_packages():
