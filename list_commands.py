@@ -10,7 +10,7 @@ from linecache import checkcache
 import sublime_plugin
 
 from . helpers import plugin_name, normalise_to_open_file_path,\
-                      package_name_from_asset_path
+                      package_name_and_package_relative_path
 
 ################################################################################
 
@@ -26,7 +26,7 @@ class ListCommands(sublime_plugin.WindowCommand):
 
         for cmd_type, cmds in the_cmds:
             cmds = dict( ( plugin_name(t), t) for t in cmds)
-            
+
             # print(cmds)
 
             for cmd_name, cmd in list(cmds.items()):
@@ -34,10 +34,13 @@ class ListCommands(sublime_plugin.WindowCommand):
 
                 try:
                     f = os.path.normpath(inspect.getsourcefile(cmd))
-                    
+
                     # TODO
+                    # TODO: filename relative to package
                     # pkg = f.split(sep)[len(sublime.packages_path().split(sep))]
-                    pkg = package_name_from_asset_path(f)
+                    pkg, relative = package_name_and_package_relative_path(f)
+                    pkg = "%s/%s" % (pkg, relative)
+                    
                     # print (pkg)
 
                     commands += [(
@@ -46,6 +49,7 @@ class ListCommands(sublime_plugin.WindowCommand):
                         cmd
                     )]
                 except:
+                    print ("Exceptional")
                     print (cmd)
 
         commands.sort(key=lambda i:i[0])
@@ -65,9 +69,9 @@ class ListCommands(sublime_plugin.WindowCommand):
                 line_num_one_based = inspect.getsourcelines(obj)[-1]
                 file_name = os.path.normpath(cmd[1])
                 file_name = normalise_to_open_file_path(file_name)
-                
-                window.run_command("open_file_enhanced", 
-                    {"file" :  (file_name), 
+
+                window.run_command("open_file_enhanced",
+                    {"file" :  (file_name),
                      "line" : line_num_one_based})
 
         window.show_quick_panel(display, on_select, 1)

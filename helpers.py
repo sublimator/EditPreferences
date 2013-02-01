@@ -23,15 +23,16 @@ PREFIX_ZIP_PACKAGE_RELATIVE = re.compile("(?P<prefix>.*)/"
 
 #################################### HELPERS ###################################
 
-def package_name_from_asset_path(fn):
-    
+def package_name_and_package_relative_path(fn):
     m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn )
 
     if m is not None:
-        return m.groupdict()['package']
+        d = m.groupdict()
+        return d['package'], d['relative']
     else:
         sep = os.path.sep
-        return fn.split(sep)[len(sublime.packages_path().split(sep))]
+        return (fn.split(sep)[len(sublime.packages_path().split(sep))],
+                fn[len(sublime.packages_path()):])
 
 def get_zip_file_and_relative(fn):
     m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn )
@@ -51,9 +52,9 @@ def package_file_exists(fn):
     
         Could be an actual path or a pseudo path
     """
-    
+
     zip_file, path = get_zip_file_and_relative(fn)
-    
+
     if zip_file:
         with zipfile.ZipFile(zip_file, 'r') as zip:
             return any(p == path for p in zip.namelist())
@@ -94,6 +95,7 @@ def view_related_packages(view):
     pkg_path = normpath(sublime.packages_path())
     dirs = []
 
+    # TODO: handle zips
     if fn and normpath(fn).startswith(pkg_path):
         folder = split(fn[len(pkg_path)+1:])[0].replace('\\', '/')
         folder = folder.split('/')[0]
@@ -174,7 +176,7 @@ def contextual_packages_list(view=None):
     others = sorted(set((f["name"] for f in enumerate_installed_packages()
                        if f["name"] not in contextual)),
                       key = lambda f: f.lower())
-    
+
     ignored = set((sublime.load_settings('Preferences.sublime-settings')
                          .get('ignored_packages')))
 
@@ -206,7 +208,7 @@ def list_package_dir(package_info):
     contents = defaultdict (
             lambda: dict (
             name = None,
-            zip_path=False, 
+            zip_path=False,
             folder_path=False ))
 
     for f in zip_files:
@@ -217,7 +219,7 @@ def list_package_dir(package_info):
     if folder:
         for f in os.listdir(folder):
             f_info = contents[f]
-            
+
             f_info['name'] = f
             f_info['folder_path'] = os.path.join(folder, f)
 
@@ -226,7 +228,7 @@ def list_package_dir(package_info):
 # open_file_path
 def package_file_contents(fn):
     fn = re.sub(r'\\', '/', fn)
-    
+
     m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn)
     if m is not None:
         zip_file = "%(prefix)s/%(package)s.sublime-package" % m.groupdict()
@@ -242,13 +244,13 @@ def testicle():
     # print (repr(the_view))
     # print (view_related_packages(the_view))
     # print ("FFFF")
-    
-    
+
+
     path = "/home/nick/sublime_text_3/Packages/Default.sublime-package/sort.py"
     print(get_zip_file_and_relative(path))
     print(package_file_exists(path))
-    
-    
+
+
     # from pprint import pprint
     # import pprint
     # pprint.pprint (enumerate_installed_packages())
@@ -259,9 +261,9 @@ def testicle():
 
     # lookup = package_info_lookup()
     # ff = list_package_dir(lookup["Default"])
-    
+
     # pprint(ff)
-    
+
     # for pkg, name, f in glob_packages('sublime-settings'):
     #     print ("f", f, pkg)
 
@@ -272,8 +274,8 @@ def testicle():
     # z = zipfile.ZipFile(path, 'r')
     # files = sorted([i.filename for i in z.infolist() if not '/' in i.filename])
     # z.close()
-    
-    
+
+
     # pprint(list(glob_packages('sublime-settings')))
 
     # pprint (files)
@@ -299,7 +301,7 @@ def testicle():
 ##################################### TODO #####################################
 
 def glob_packages(file_type='sublime-keymap', view=None):
-    
+
     if isinstance(file_type, str):
         file_type = file_type.replace('%PLATFORM%', sublime.platform())
         if '.' not in file_type:
