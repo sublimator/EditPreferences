@@ -8,9 +8,9 @@ from linecache import checkcache
 
 # Sublime Libs
 import sublime_plugin
-import sublime
 
-from . helpers import plugin_name, normalise_to_open_file_path
+from . helpers import plugin_name, normalise_to_open_file_path,\
+                      package_name_from_asset_path
 
 ################################################################################
 
@@ -18,8 +18,6 @@ class ListCommands(sublime_plugin.WindowCommand):
     def run(self, args=[]):
         window = self.window
         commands = []
-        sep = os.path.sep
-
         the_cmds = list(zip(('Application', 'Window', 'Text'),
                             sublime_plugin.all_command_classes ))
 
@@ -28,13 +26,19 @@ class ListCommands(sublime_plugin.WindowCommand):
 
         for cmd_type, cmds in the_cmds:
             cmds = dict( ( plugin_name(t), t) for t in cmds)
+            
+            # print(cmds)
 
             for cmd_name, cmd in list(cmds.items()):
-                cmd = cmd
+                # cmd = cmd
 
                 try:
                     f = os.path.normpath(inspect.getsourcefile(cmd))
-                    pkg = f.split(sep)[len(sublime.packages_path().split(sep))]
+                    
+                    # TODO
+                    # pkg = f.split(sep)[len(sublime.packages_path().split(sep))]
+                    pkg = package_name_from_asset_path(f)
+                    # print (pkg)
 
                     commands += [(
                         (cmd_type, pkg, cmd_name),

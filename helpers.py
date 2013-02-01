@@ -23,6 +23,16 @@ PREFIX_ZIP_PACKAGE_RELATIVE = re.compile("(?P<prefix>.*)/"
 
 #################################### HELPERS ###################################
 
+def package_name_from_asset_path(fn):
+    
+    m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn )
+
+    if m is not None:
+        return m.groupdict()['package']
+    else:
+        sep = os.path.sep
+        return fn.split(sep)[len(sublime.packages_path().split(sep))]
+
 def get_zip_file_and_relative(fn):
     m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn )
 

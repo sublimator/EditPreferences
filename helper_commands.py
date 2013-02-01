@@ -5,7 +5,6 @@
 import sublime
 import sublime_plugin
 
-
 from .helpers import open_file_path
 
 ################################ HELPER COMMANDS ###############################
@@ -22,13 +21,13 @@ class GotoLineNumber(sublime_plugin.TextCommand):
         view.show(line_region, True)
 
 class SelectRegions(sublime_plugin.TextCommand):
-    def run(self, edit, regions):
+    def run(self, edit, regions, show_surrounds=True):
         view = self.view
         view.sel().clear()
         for r in regions:
             view.sel().add(sublime.Region(*r))
         
-        view.show(view.sel(), True)
+        view.show(view.sel(), show_surrounds)
 
 class OpenFileEnhanced(sublime_plugin.WindowCommand):
     def run(self, file, line=None, regions=None, **kw):
