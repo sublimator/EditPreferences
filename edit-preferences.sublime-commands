@@ -1,42 +1,43 @@
 [
     { "caption": "Edit Preference: List Settings",          "command": "list_settings"},
     { "caption": "Edit Preference: List Plugins Commands", "command": "list_commands" },
-    { "caption": "Edit Preference: List Shortcut Keys",    "command": "list_shortcut_keys"}
+    { "caption": "Edit Preference: List Shortcut Keys",    "command": "list_shortcut_keys"},
+
+
+    { "caption": "Edit Preference: Theme",
+      "command": "edit_package_files",
+      "args": {"pref_type": "sublime-theme"}},
+
+    { "caption": "Edit Preference: sublime-completions",
+      "command": "edit_package_files",
+      "args": {"pref_type": "sublime-completions"}},
+
+    { "caption": "Edit Preference: sublime-build",
+      "command": "edit_package_files",
+      "args": {"pref_type": "sublime-build"}},
+
+    { "caption": "Edit Preference: sublime-mousemap",
+      "command": "edit_package_files",
+      "args": {"pref_type": "sublime-mousemap"}},
+
+    { "caption": "Edit Preference: sublime-menu",
+      "command": "edit_package_files",
+      "args": {"pref_type": "sublime-menu"}},
+
+    { "caption": "Edit Preference: tmTheme|colorscheme",
+      "command": "edit_package_files",
+      "args": {"pref_type": ".*\\.(tmTheme|stTheme)$"}},
+
+    { "caption": "Edit Preference: tmLanguage|syntax|grammar",
+      "command": "edit_package_files",
+      "args": {"pref_type": ".*\\.((tm|st)Language)$"}},
+
+    { "caption": "Edit Preference: sublime-commands",
+      "command": "edit_package_files",
+      "args": {"pref_type": "sublime-commands"}}
 
     // COMMANDS THAT HAVENT BEEN PORTED TO ST3 YET
         
-    // { "caption": "Edit Preference: List Menus",            "command": "list_menu_bindings"},
-
-    // { "caption": "Edit Preference: Theme",
-    //   "command": "edit_package_files",
-    //   "args": {"pref_type": "sublime-theme"}},
-
-    // { "caption": "Edit Preference: sublime-completions",
-    //   "command": "edit_package_files",
-    //   "args": {"pref_type": "sublime-completions"}},
-
-    // { "caption": "Edit Preference: sublime-build",
-    //   "command": "edit_package_files",
-    //   "args": {"pref_type": "sublime-build"}},
-
-    // { "caption": "Edit Preference: sublime-mousemap",
-    //   "command": "edit_package_files",
-    //   "args": {"pref_type": "sublime-mousemap"}},
-
-    // { "caption": "Edit Preference: sublime-menu",
-    //   "command": "edit_package_files",
-    //   "args": {"pref_type": "sublime-menu"}},
-
-    // { "caption": "Edit Preference: tmTheme|colorscheme",
-    //   "command": "edit_package_files",
-    //   "args": {"pref_type": ".*\\.(tmTheme|stTheme)$"}},
-
-    // { "caption": "Edit Preference: tmLanguage|syntax|grammar",
-    //   "command": "edit_package_files",
-    //   "args": {"pref_type": ".*\\.((tm|st)Language)$"}},
-
-    // { "caption": "Edit Preference: sublime-commands",
-    //   "command": "edit_package_files",
-    //   "args": {"pref_type": "sublime-commands"}}
+    // { "caption": "Edit Preference: List Menus",            "command": "list_menu_bindings"}
 
 ]

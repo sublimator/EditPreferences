@@ -62,7 +62,6 @@ class ListCommands(sublime_plugin.WindowCommand):
                 file_name = os.path.normpath(cmd[1])
                 file_name = normalise_to_open_file_path(file_name)
                 
-                
                 window.run_command("open_file_enhanced", 
                     {"file" :  (file_name), 
                      "line" : line_num_one_based})

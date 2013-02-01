@@ -23,6 +23,33 @@ PREFIX_ZIP_PACKAGE_RELATIVE = re.compile("(?P<prefix>.*)/"
 
 #################################### HELPERS ###################################
 
+def get_zip_file_and_relative(fn):
+    m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn )
+
+    if m is not None:
+        d = m.groupdict()
+        zip_file = "%(prefix)s/%(package)s.sublime-package" % d
+        f = d['relative']
+        return zip_file, f
+    else:
+        return False, fn
+
+def package_file_exists(fn):
+    """
+    
+    :fn:
+    
+        Could be an actual path or a pseudo path
+    """
+    
+    zip_file, path = get_zip_file_and_relative(fn)
+    
+    if zip_file:
+        with zipfile.ZipFile(zip_file, 'r') as zip:
+            return any(p == path for p in zip.namelist())
+    else:
+        return os.path.exists(fn)
+
 def open_file_path(fn):
     """
     Formats a path as /C/some/path/on/windows/no/colon.txt that is suitable to
@@ -192,12 +219,9 @@ def package_file_contents(fn):
     m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn)
     if m is not None:
         zip_file = "%(prefix)s/%(package)s.sublime-package" % m.groupdict()
-        z = zipfile.ZipFile(zip_file, 'r')
-        try:
+        with zipfile.ZipFile(zip_file, 'r') as z:
             f = m.groupdict()['relative']
             return z.read(f).decode('utf-8')
-        finally:
-            z.close()
     else:
         with open(fn, 'r', encoding='utf-8') as fh:
             return fh.read()
@@ -207,14 +231,20 @@ def testicle():
     # print (repr(the_view))
     # print (view_related_packages(the_view))
     # print ("FFFF")
-    from pprint import pprint
+    
+    
+    path = "/home/nick/sublime_text_3/Packages/Default.sublime-package/sort.py"
+    print(get_zip_file_and_relative(path))
+    print(package_file_exists(path))
+    
+    
+    # from pprint import pprint
     # import pprint
     # pprint.pprint (enumerate_installed_packages())
-    print (contextual_packages_list())
+    # print (contextual_packages_list())
     # print (package_info_lookup())
 
 
-    # path = "/home/nick/sublime_text_3/Packages/Default.sublime-package"
 
     # lookup = package_info_lookup()
     # ff = list_package_dir(lookup["Default"])
