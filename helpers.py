@@ -85,12 +85,16 @@ def view_related_packages(view):
     dirs = []
 
     if fn and normpath(fn).startswith(pkg_path):
-        dirs.append(split(fn[len(pkg_path)+1:])[0])
+        folder = split(fn[len(pkg_path)+1:])[0].replace('\\', '/')
+        folder = folder.split('/')[0]
+        dirs.append(folder)
 
     syntax = view.settings().get("syntax")
     syntax_package = syntax.split('/')[1]
 
     dirs.append(syntax_package)
+    
+    print (dirs)
 
     return dirs
 
