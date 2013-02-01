@@ -1,7 +1,7 @@
 Some commands to list shortcut keys / settings etc in the QuickPanel and
 navigate to edit location on selection.
 
-Note, you'll need to make sure the JSON is reasonably well formed. 
+Note, you'll need to make sure the JSON is reasonably well formed.
 
 That means using only `//` style comments  (easily stripped before passing text
 to python's std lib json parser)
@@ -16,4 +16,8 @@ Command Palette Commands:
     { "caption": "Edit Preference: List Plugins Commands", "command": "list_commands" },
     { "caption": "Edit Preference: List Shortcut Keys",    "command": "list_shortcut_keys"}
 
-TODO: Support fully sublime text variant of json.
+TODO:
+    Restore insert binding repr command
+    Handle OSX modifiers like super and command
+    
+    Support fully sublime text variant of json.
