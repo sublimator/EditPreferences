@@ -5,7 +5,7 @@
 # Std Libs
 import json
 import functools
-import re
+# import re
 
 from contextlib import contextmanager
 
@@ -59,8 +59,84 @@ def col_val(val, end, pend):
 
     return val
 
+#################################### SANITY ####################################
+
+def json_filter(text):
+    i=0
+    n=len(text)
+
+    while i < n:
+        c = text[i]
+        i+=1
+
+        if c == '"':
+            yield c
+
+            while i < n:
+                c = text[i]
+                i += 1
+
+                if c == "\\":
+                    yield c
+                    if i < n:
+                        yield text[i]
+                        i+=1
+                elif c == '"':
+                    yield c
+                    break
+                else:
+                    yield c
+
+        elif c == '/':
+            try:
+                next_char = text[i]
+            except IndexError:
+                next_char = ''
+
+            token = c+next_char
+
+            if token == "//":
+                i-=1
+                while i < n and text[i] != '\n':
+                    yield ' '
+                    i+=1
+                yield '\n'
+                i+=1
+            elif token == "/*":
+                i-=1
+                while i < n and not (text[i] == '*' and text[i+1] == '/'):
+                    yield ' '
+                    i+=1
+                yield '  '
+                i+=1
+        elif c == ',':
+            buf = [c]
+
+            while i < n:
+                c=text[i]
+                buf.append(c)
+                i+=1
+
+                if c.isspace():
+                    continue
+                elif c in ']}':
+                    buf[0] = ' '
+                    break
+                else:
+                    buf.pop()
+                    i-=1
+                    break
+
+            for c in buf:
+                yield c
+        else:
+            yield c
+
+def sanitize_json(text):
+    return ''.join(json_filter(text))
+
 def strip_json_comments(text):
-    return re.sub(r"(?m)^\s*//.*$", lambda m: len(m.group(0)) * ' ', text)
+    return sanitize_json(text)
 
 ################################################################################
 
