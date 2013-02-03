@@ -91,7 +91,8 @@ def json_filter(text):
             try:
                 next_char = text[i]
             except IndexError:
-                next_char = ''
+                yield c # Let the proper json parser blow up with error report
+                continue
 
             token = c+next_char
 
