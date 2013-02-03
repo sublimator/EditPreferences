@@ -130,10 +130,13 @@ def enumerate_installed_packages():
                                  sublime.installed_packages_path()]
 
     installed_packages       = ([
-        {"zip" : False, "folder" : join(sublime.packages_path(), d),
-          "name" : d}
-          for d in os.listdir(sublime.packages_path())
-        if isdir (join(sublime.packages_path(), d))
+            {"zip"    : False, 
+             "folder" : join(sublime.packages_path(), d),
+             "name"   : d}
+        for 
+            d in os.listdir(sublime.packages_path())
+        if 
+            isdir (join(sublime.packages_path(), d))
     ])
 
     for location in zipped_package_locations:

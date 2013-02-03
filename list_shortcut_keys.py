@@ -37,7 +37,7 @@ def normalize_modifier_sequencing(keys):
         keys          = combo.split('+')
         rebuilt_combo = []
 
-        for mod in ('ctrl', 'alt', 'shift'):
+        for mod in ('super', 'ctrl', 'alt', 'shift'):
             if mod in keys:
                 rebuilt_combo.append(keys.pop(keys.index(mod)))
 
@@ -90,7 +90,7 @@ class ListShortcutKeysCommand(sublime_plugin.WindowCommand):
                     args.append( (pkg, f, keys, nkey, command, i, cargs, scope) )
                     completions.update([pkg, command])
                     completions.update(re.findall(r'\w+', nkey))
-                    completions.add(pkg)
+                    # completions.add(pkg)
 
             except Exception as e:
                 print("Error parsing keymap, look for trailing commas and /* style */ comments")
