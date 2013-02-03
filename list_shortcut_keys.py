@@ -78,7 +78,7 @@ class ListShortcutKeysCommand(sublime_plugin.WindowCommand):
         window      = self.window
 
         args        = []
-        keymap      = 'Default( \(%s\))?.sublime-keymap' % sublime.platform().title()
+        keymap      = 'Default( \(%s\))?.sublime-keymap$' % sublime.platform().title()
         keymaps     = glob_packages(keymap)
         completions = set()
 
