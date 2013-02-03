@@ -27,7 +27,8 @@ class SelectRegions(sublime_plugin.TextCommand):
         for r in regions:
             view.sel().add(sublime.Region(*r))
         
-        view.show(view.sel(), show_surrounds)
+        if view.sel():
+            view.show(view.line(view.sel()[0]), show_surrounds)
 
 class OpenFileEnhanced(sublime_plugin.WindowCommand):
     def run(self, file, line=None, regions=None, **kw):
@@ -52,7 +53,8 @@ class OpenFileEnhanced(sublime_plugin.WindowCommand):
                         'goto_line_number', dict(line=line))
                 elif regions is not None:
                     open_file_view.run_command (
-                        'select_regions', dict(regions=regions))
+                        'select_regions', dict( regions=regions, 
+                                                show_surrounds=True ))
                 
                 window.focus_view(open_file_view)
         do()
