@@ -6,6 +6,8 @@
     { "keys": ["ctrl+alt+shift+k"],  "command":  "list_shortcut_keys"},
     { "keys": ["ctrl+alt+shift+c"],  "command":  "list_commands" },
     { "keys": ["ctrl+alt+o"],        "command":  "list_settings"},
+
+    { "keys": ["ctrl+alt+shift+m"],  "command":  "list_menu_bindings"},
  
     { "keys": ["ctrl+alt+shift+p"],  "command":  "show_overlay", 
                                         "args": {"overlay": "command_palette", 
