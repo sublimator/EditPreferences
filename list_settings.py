@@ -37,8 +37,6 @@ class ListSettings(sublime_plugin.WindowCommand):
                 for setting, value in list(setting_dict.items()):
                     settings.append (
                         (f, pkg_display, setting, dumpsj(value), value))
-
-        print (completions)
         
         display = format_for_display(settings, cols=(2,3,1))
         ch = temporary_event_handler( lambda *a: [(c,c) for c in completions],
