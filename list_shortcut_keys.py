@@ -119,6 +119,6 @@ class ListShortcutKeysCommand(sublime_plugin.WindowCommand):
                 window.run_command("open_file_enhanced", {"file" :  (fn),
                                                           "regions" : regions})
 
-        display = format_for_display(args, cols = (3, 0, 4))
+        display = format_for_display(args, cols = (3, 4, 0, ))
         display = list(map(list, list(zip(display, [a[-2] for a in args]))))
         window.show_quick_panel(display, on_select, 1)

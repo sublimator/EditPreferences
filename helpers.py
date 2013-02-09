@@ -96,7 +96,7 @@ def view_related_packages(view):
     dirs = []
 
     # TODO: handle zips
-    if fn and normpath(fn).startswith(pkg_path):
+    if fn and normpath(fn).startswith(pkg_path) and os.path.exists(fn):
         folder = split(fn[len(pkg_path)+1:])[0].replace('\\', '/')
         folder = folder.split('/')[0]
         dirs.append(folder)

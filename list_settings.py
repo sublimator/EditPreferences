@@ -40,7 +40,7 @@ class ListSettings(sublime_plugin.WindowCommand):
 
         print (completions)
         
-        display = format_for_display(settings, cols=(1,2,3))
+        display = format_for_display(settings, cols=(2,3,1))
         ch = temporary_event_handler( lambda *a: [(c,c) for c in completions],
                                       'on_query_completions')
         def on_select(i):
