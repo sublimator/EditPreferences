@@ -28,7 +28,7 @@ class SelectRegions(sublime_plugin.TextCommand):
             view.sel().add(sublime.Region(*r))
         
         if view.sel():
-            view.show(view.line(view.sel()[0]), show_surrounds)
+            view.show(view.line(view.sel()[0]).begin(), show_surrounds)
 
 class OpenFileEnhanced(sublime_plugin.WindowCommand):
     def run(self, file, line=None, regions=None, **kw):
