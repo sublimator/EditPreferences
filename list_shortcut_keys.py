@@ -78,7 +78,10 @@ class ListShortcutKeysCommand(sublime_plugin.WindowCommand):
         window      = self.window
 
         args        = []
-        keymap      = 'Default( \(%s\))?.sublime-keymap$' % sublime.platform().title()
+        platform    = sublime.platform().title()
+        if platform == 'Osx': platform = 'OSX'
+
+        keymap      = 'Default( \(%s\))?.sublime-keymap$' % platform
         keymaps     = glob_packages(keymap)
         completions = set()
 
