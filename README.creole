@@ -36,19 +36,16 @@ The following bindings show how it works.
 Note the `expecting_binding_repr_mode` key.
 
 {{{
-
     {"args": {"val": "alt"},
      "command": "insert_binding_repr",
      "context": [{"key": "overlay_visible", "operand": true, "operator": "equal"},
                  {"key": "setting.expecting_binding_repr_mode",
                   "operand": false,
                   "operator": "equal"}],
-     "keys": ["alt+="]},
-
+     "keys": ["alt+="]}
 }}}
 
 {{{
-
      {"args": {"val": "q"},
       "command": "insert_binding_repr",
       "context": [{"key": "overlay_visible", "operand": true, "operator": "equal"},
@@ -56,8 +53,6 @@ Note the `expecting_binding_repr_mode` key.
                    "operand": true,
                    "operator": "equal"}],
       "keys": ["q"]}
-
-
 }}}
 
 So how would you insert ctrl+alt+q?
