@@ -1,7 +1,7 @@
 === Description ===
 
-Some commands to list shortcut keys / preferences etc in the QuickPanel and
-navigate to edit location on selection.
+Some commands for Sublime Text 3 (NOT 2!) to list shortcut keys / preferences
+etc in the QuickPanel and navigate to edit location on selection.
 
 === 2000 Words ===
 
