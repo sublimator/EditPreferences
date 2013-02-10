@@ -47,6 +47,3 @@ Handily opens files inside sublime-package zips.
     { "caption": "Edit Preference: List Menus",  "command": "list_menu_bindings"}
 ]
 }}}
-
-TODO:
-    Restore insert binding repr command
