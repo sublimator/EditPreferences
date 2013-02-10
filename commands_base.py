@@ -20,7 +20,7 @@ def glob_and_parse_package_json(pattern):
 
         yield pkg, name, f, text, setting_dict
 
-class IEditJSONPreferenceBase:
+class IEditJSONPreference:
     format_cols = () # MUST_IMPLEMENT
     settings_pattern = "*.sublime-json" # MUST OVERRIDE
 
@@ -31,7 +31,7 @@ class IEditJSONPreferenceBase:
     def format_for_display(self, settings):
         return settings # for quick panel
         
-class EditJSONPreferenceBase(sublime_plugin.WindowCommand, IEditJSONPreferenceBase):
+class EditJSONPreferenceBase(sublime_plugin.WindowCommand, IEditJSONPreference):
     def format_for_display(self, settings):
         return format_for_display(settings, cols=self.format_cols)
     

@@ -15,23 +15,23 @@ Copy from the Default.sublime-keymap.template the last line that contains a
 multitude of bindings with `insert_binding_repr` and place it in your User
 keymap.
 
-How it works is you actually think modifiers, PLUS, THEN key, in total pressing
-TWO key combinations (the latter a lonely combo of one)
+How it works is you press the modifiers, then PLUS, THEN the key, pressing in
+total TWO key combinations (the latter a lonely combo of one)
 
 You can't bind to just a modifier like alt, so plus seems a resaonable
-key/mnemonic. Note that on a standard US keyboard `=` is on the same key as
-`+` (plus)
+key/mnemonic. Note that on a standard US keyboard `=` is on the same key as `+`
+(plus)
 
-So how would you insert alt+q?
-
-    * PRESS `alt+=`
-    * PRESS `q`
-
-You can think of it like this:
+So how would you insert alt+q? You can think of it like this:
 
     * PRESS `alt` and hold it down
     * PRESS `=` while thinking PLUS then lift all fingers
     * PRESS `q`
+
+In sublime `{"keys": [...]}` terms:
+
+    * PRESS `["alt+="]`
+    * PRESS `["q"]`
 
 The following bindings show how it works.
 Note the `expecting_binding_repr_mode` key.
@@ -56,7 +56,7 @@ Note the `expecting_binding_repr_mode` key.
       "keys": ["q"]}
 }}}
 
-So how would you insert ctrl+alt+q?
+So how would you insert ctrl+alt+q? (In sublime terms)
 
     * PRESS `ctrl+alt+=`
     * PRESS `q`
