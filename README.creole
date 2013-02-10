@@ -1,5 +1,7 @@
 Some commands to list shortcut keys / settings etc in the QuickPanel and
-navigate to edit location on selection.
+navigate to edit location on selection. 
+
+Handily opens files inside sublime-package zips.
 
 {{http://ndudfield.com/zencoding/old/editprefs-settings.gif}}
 {{http://ndudfield.com/zencoding/old/editprefs.gif}}

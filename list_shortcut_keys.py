@@ -5,23 +5,16 @@
 import re
 
 # Sublime Libs
-import sublime_plugin
 import sublime
 
 from .quick_panel_cols import format_for_display
-from .helpers import glob_packages, temporary_event_handler, \
-                     package_file_contents, \
-                     normalise_to_open_file_path
+from .jsonix import dumps as dumpsj
 
-# from .jsonix import strip_json_comments
-from .jsonix import decode_with_ix, strip_json_comments, loads as loadsj, \
-                    dumps as dumpsj
+from .commands_base import EditJSONPreferenceBase
 
 ############################### BINDINGS DISPLAY ###############################
 
 def format_binding_command(b):
-    # fmt = '%s: %s'
-     # '.join(fmt % a for a in b['args'].items())
     return b['command']
 
 def normalize_tabtriggers(key):
@@ -47,14 +40,10 @@ def normalize_modifier_sequencing(keys):
     return ','.join(rebuilt_key)
 
 def normalize_binding_display(key):
+    # TODO:  things like backquote and `
     return normalize_tabtriggers(normalize_modifier_sequencing(key))
 
-def parse_keymap(f):
-    text = package_file_contents(f)
-    text = strip_json_comments(text)
-    with decode_with_ix():
-        bindings = loadsj(text)
-
+def destructure_bindings(bindings):
     for binding in bindings:
         keys     = binding.get('keys')
         args     = dumpsj(binding.get('args', {}))
@@ -69,59 +58,28 @@ def parse_keymap(f):
 
         yield keys, command, args, scope
 
-################################################################################
+class ListShortcutKeys(EditJSONPreferenceBase):
+    format_cols   = (3, 4, 0, )
+    platform      = sublime.platform().title()
+    if platform   == 'Osx': platform = 'OSX'
+    settings_pattern  = 'Default( \(%s\))?.sublime-keymap$' % platform
 
-class ListShortcutKeysCommand(sublime_plugin.WindowCommand):
-    instance = None
+    def format_for_display(self, settings):
+        display = format_for_display(settings, cols=self.format_cols)
+        return list(map(list, zip(display, [a[-2] for a in settings])))
 
-    def run(self, args=[]):
-        window      = self.window
+    def on_settings_json(self, pkg, name, f, text, settings_json, completions):
+        for keys, command, cargs, scope in destructure_bindings(settings_json):
+            if command == 'insert_binding_repr': continue
+            
+            nkey = normalize_binding_display(keys)
 
-        args        = []
-        platform    = sublime.platform().title()
-        if platform == 'Osx': platform = 'OSX'
+            completions.update([pkg, command])
+            completions.update(re.findall(r'\w+', nkey))
 
-        keymap      = 'Default( \(%s\))?.sublime-keymap$' % platform
-        keymaps     = glob_packages(keymap)
-        completions = set()
+            yield (pkg, f, keys, nkey, command, cargs, scope)
 
-        for pkg, name, f in keymaps:
-            try:
-                for i, (keys, command, cargs, scope), in enumerate(parse_keymap(f)):
-                    nkey = normalize_binding_display(keys)
-
-                    args.append( (pkg, f, keys, nkey, command, i, cargs, scope) )
-                    completions.update([pkg, command])
-                    completions.update(re.findall(r'\w+', nkey))
-                    # completions.add(pkg)
-
-            except Exception as e:
-                print("Error parsing keymap, look for trailing commas and /* style */ comments")
-                print(e, f)
-
-
-        def oqc(*args):
-            return list([(c,c) for c in completions])
-
-        ch = temporary_event_handler(oqc, 'on_query_completions')
-
-        def on_select(i):
-            ch.remove()
-
-            if i != -1:
-                f, keys, nkey, command, nth, cargs, scope = args[i][1:]
-
-
-                fn = normalise_to_open_file_path(f)
-                regions = [
-                    [
-                        keys[0].__inner__()[0],
-                        keys[-1].__inner__()[1],
-                    ]
-                ]
-                window.run_command("open_file_enhanced", {"file" :  (fn),
-                                                          "regions" : regions})
-
-        display = format_for_display(args, cols = (3, 4, 0, ))
-        display = list(map(list, list(zip(display, [a[-2] for a in args]))))
-        window.show_quick_panel(display, on_select, 1)
+    def on_selection(self, setting):
+        f, keys, nkey, command, cargs, scope = setting[1:]
+        regions = [[keys[0].__inner__()[0],  keys[-1].__inner__()[1]]]
+        return f, None, regions
