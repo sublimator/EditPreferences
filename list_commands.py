@@ -38,10 +38,9 @@ class ListCommands(sublime_plugin.WindowCommand):
                     # TODO
                     # TODO: filename relative to package
                     # pkg = f.split(sep)[len(sublime.packages_path().split(sep))]
+
                     pkg, relative = package_name_and_package_relative_path(f)
                     pkg = "%s/%s" % (pkg, relative)
-                    
-                    # print (pkg)
 
                     commands += [(
                         (cmd_type, pkg, cmd_name),

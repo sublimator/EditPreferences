@@ -30,9 +30,11 @@ def package_name_and_package_relative_path(fn):
         d = m.groupdict()
         return d['package'], d['relative']
     else:
+        # TODO: fix this horrid code!
         sep = os.path.sep
-        return (fn.split(sep)[len(sublime.packages_path().split(sep))],
-                fn[len(sublime.packages_path()):])
+        pkg = fn.split(sep)[len(sublime.packages_path().split(sep))]
+        return (pkg,
+                fn[len(sublime.packages_path()) + 1 + len(pkg) + 1:])
 
 def get_zip_file_and_relative(fn):
     m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn )

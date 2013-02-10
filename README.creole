@@ -15,12 +15,6 @@ Copy from the Default.sublime-keymap.template the last line that contains a
 multitude of bindings with `insert_binding_repr` and place it in your User
 keymap.
 
-How it works is you press the modifiers, then PLUS, THEN the key, pressing in
-total TWO key combinations (the latter a lonely combo of one)
-
-You can't bind to just a modifier like alt, so plus seems a resaonable
-key/mnemonic. Note that on a standard US keyboard `=` is on the same key as `+`
-(plus)
 
 So how would you insert alt+q? You can think of it like this:
 
@@ -28,7 +22,10 @@ So how would you insert alt+q? You can think of it like this:
     * PRESS `=` while thinking PLUS then lift all fingers
     * PRESS `q`
 
-In sublime `{"keys": [...]}` terms:
+Note that on a standard US keyboard `=` is on the same key as `+` (plus)  You
+can't bind to just a modifier like alt, so plus seems a resaonable key/mnemonic.
+
+In sublime `{"keys": [...]}` terms previous exmaple would be:
 
     * PRESS `["alt+="]`
     * PRESS `["q"]`
@@ -61,7 +58,7 @@ So how would you insert ctrl+alt+q? (In sublime terms)
     * PRESS `ctrl+alt+=`
     * PRESS `q`
 
-=== Help? You can't press down/enter/up ? ===
+=== Help? You can't insert_binding_repr for down|enter|up ? ===
 
 Unfortunately, some bindings don't work as the second key due to the quickpanel
 swallowing them:
@@ -119,3 +116,8 @@ The workaround is to type the first letter of the key you desire, eg:
       "args": {"pref_type": "sublime-commands"}}
 ]
 }}}
+
+=== TODO === 
+
+Set cyclic tab key for auto complete
+
