@@ -83,6 +83,7 @@ The workaround is to type the first letter of the key you desire, eg:
     { "caption": "Edit Preference: List Settings",         "command": "list_settings"},
     { "caption": "Edit Preference: List Plugins Commands", "command": "list_commands" },
     { "caption": "Edit Preference: List Shortcut Keys",    "command": "list_shortcut_keys"},
+    { "caption": "Edit Preference: List Menu Bindings",    "command": "list_menu_bindings"},
 
     { "caption": "Edit Preference: Theme",
       "command": "edit_package_files",
@@ -114,8 +115,6 @@ The workaround is to type the first letter of the key you desire, eg:
 
     { "caption": "Edit Preference: sublime-commands",
       "command": "edit_package_files",
-      "args": {"pref_type": "sublime-commands"}},
-
-    { "caption": "Edit Preference: List Menus",  "command": "list_menu_bindings"}
+      "args": {"pref_type": "sublime-commands"}}
 ]
 }}}
