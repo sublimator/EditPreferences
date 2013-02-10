@@ -14,15 +14,22 @@ navigate to edit location on selection.
 Copy from the Default.sublime-keymap.template the last line that contains a
 multitude of bindings with `insert_binding_repr`
 
-How it works is you actually think modifiers THEN key, and press TWO key
-combinations (the latter is just one key)
+How it works is you actually think modifiers, PLUS, THEN key, in total pressing
+TWO key combinations (the latter a lonely combo of one)
 
-Note that on a standard US keyboard `=` is on the same key as plus. You can't
-bind to just a modifier like alt, so plus seems a resaonable key/mnemonic.
+You can't bind to just a modifier like alt, so plus seems a resaonable
+key/mnemonic. Note that on a standard US keyboard `=` is on the same key as
+`+` (plus)
 
 So how would you insert alt+q?
 
     * PRESS `alt+=`
+    * PRESS `q`
+
+You can think of it like this:
+
+    * PRESS `alt` and hold it down
+    * PRESS `=` while thinking PLUS then lift all fingers
     * PRESS `q`
 
 The following bindings show how it works.
@@ -59,11 +66,11 @@ So how would you insert ctrl+alt+q?
     * PRESS `q`
 
 Unfortunately, some bindings don't work as the second key due to the quickpanel
-swallowing them: 
+swallowing them:
 
     * <enter>
     * <up>
-    * <down> 
+    * <down>
     * and others ...
 
 The workaround is to type the first letter of the key you desire, eg:
