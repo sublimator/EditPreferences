@@ -60,6 +60,8 @@ So how would you insert ctrl+alt+q?
     * PRESS `ctrl+alt+=`
     * PRESS `q`
 
+=== Help? You can't press down/enter/up ? ===
+
 Unfortunately, some bindings don't work as the second key due to the quickpanel
 swallowing them:
 
