@@ -12,7 +12,8 @@ etc in the QuickPanel and navigate to edit location on selection.
 === How to insert a binding repr in the Quick Panel ===
 
 Copy from the Default.sublime-keymap.template the last line that contains a
-multitude of bindings with `insert_binding_repr`
+multitude of bindings with `insert_binding_repr` and place it in your User
+keymap.
 
 How it works is you actually think modifiers, PLUS, THEN key, in total pressing
 TWO key combinations (the latter a lonely combo of one)
