@@ -9,7 +9,7 @@ navigate to edit location on selection.
 
 {{http://ndudfield.com/zencoding/old/editprefs.gif}}
 
-=== How do you insert binding repr in the Quick Panel ? ===
+=== How to insert a binding repr in the Quick Panel ===
 
 Copy from the Default.sublime-keymap.template the last line that contains a
 multitude of bindings with `insert_binding_repr`
