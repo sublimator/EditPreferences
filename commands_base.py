@@ -64,4 +64,5 @@ class EditJSONPreferenceBase(sublime_plugin.WindowCommand, IEditJSONPreference):
         on_highlight=lambda i: i
         window.show_quick_panel(display, on_select,
                                          on_highlight=on_highlight,
+                                         on_cancel=ch.remove,
                                          flags=1)

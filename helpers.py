@@ -403,7 +403,13 @@ class temporary_event_handler(object):
         self.callbacks.append(self)
 
     def remove(self):
-        sublime.set_timeout(lambda: self.callbacks.remove(self), 0)
+        def remove():
+            try:
+                self.callbacks.remove(self)
+                'print ("Succeeded to remove callbacks")'
+            except:
+                'print ("Failed to remove callbacks")'
+        sublime.set_timeout(remove, 0)
 
 def select(view, region, show_surrounds=True):
     sel_set = view.sel()
