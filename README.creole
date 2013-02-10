@@ -4,6 +4,7 @@ navigate to edit location on selection.
 {{http://ndudfield.com/zencoding/old/editprefs-settings.gif}}
 {{http://ndudfield.com/zencoding/old/editprefs.gif}}
 
+{{{
 [
     { "caption": "Edit Preference: List Settings",         "command": "list_settings"},
     { "caption": "Edit Preference: List Plugins Commands", "command": "list_commands" },
@@ -43,6 +44,7 @@ navigate to edit location on selection.
 
     { "caption": "Edit Preference: List Menus",  "command": "list_menu_bindings"}
 ]
+}}}
 
 TODO:
     Restore insert binding repr command
