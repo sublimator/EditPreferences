@@ -1,7 +1,7 @@
 === Description ===
 
 Some commands to list shortcut keys / preferences etc in the QuickPanel and
-navigate to edit location on selection. 
+navigate to edit location on selection.
 
 === 2000 Words ===
 
@@ -14,22 +14,22 @@ navigate to edit location on selection.
 Copy from the Default.sublime-keymap.template the last line that contains a
 multitude of bindings with `insert_binding_repr`
 
-How it works is you actually think modifier PLUS key, and press TWO key
+How it works is you actually think modifiers THEN key, and press TWO key
 combinations (the latter is just one key)
 
 Note that on a standard US keyboard `=` is on the same key as plus. You can't
 bind to just a modifier like alt, so plus seems a resaonable key/mnemonic.
 
-So how would you insert alt+q?  
+So how would you insert alt+q?
 
-    PRESS alt+=,
-    PRESS q
+    * PRESS alt+=,
+    * PRESS q
 
 The following bindings show how it works.
 Note the `expecting_binding_repr_mode` key.
 
 {{{
-    
+
     {"args": {"val": "alt"},
      "command": "insert_binding_repr",
      "context": [{"key": "overlay_visible", "operand": true, "operator": "equal"},
@@ -41,7 +41,7 @@ Note the `expecting_binding_repr_mode` key.
 }}}
 
 {{{
-     
+
      {"args": {"val": "q"},
       "command": "insert_binding_repr",
       "context": [{"key": "overlay_visible", "operand": true, "operator": "equal"},
@@ -49,12 +49,16 @@ Note the `expecting_binding_repr_mode` key.
                    "operand": true,
                    "operator": "equal"}],
       "keys": ["q"]}
-     
-    
+
+
 }}}
 
+So how would you insert ctrl+alt+q?
 
-=== Command Pallette ===
+    * PRESS ctrl+alt+=,
+    * PRESS q
+
+=== Command Palette ===
 
 {{{
 [
