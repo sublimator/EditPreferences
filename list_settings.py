@@ -3,6 +3,7 @@
 
 # Std Libs
 import re
+# import functools
 
 # Sublime Libs
 import sublime_plugin
@@ -41,8 +42,10 @@ class ListSettings(sublime_plugin.WindowCommand):
         display = format_for_display(settings, cols=(2,3,1))
         ch = temporary_event_handler( lambda *a: [(c,c) for c in completions],
                                       'on_query_completions')
-        def on_select(i):
-            ch.remove()
+        
+        def on_select(i, on_highlight=False):
+            if not on_highlight:
+                ch.remove()
 
             if i != -1:
                 key   = settings[i][2]
@@ -56,4 +59,8 @@ class ListSettings(sublime_plugin.WindowCommand):
                 window.run_command("open_file_enhanced", {"file" :  (fn), 
                                                           "regions" : regions})
 
-        window.show_quick_panel(display, on_select, 1)
+        on_highlight=lambda i: i
+        # on_highlight=functools.partial(on_select, on_highlight=1)
+        window.show_quick_panel(display, on_select, 
+                                         on_highlight=on_highlight, 
+                                         flags=1)
