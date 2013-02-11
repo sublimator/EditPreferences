@@ -47,8 +47,7 @@ for obj in (int, float, bool):
     COL_JSON[obj].__inner__ = iinner
     COL_JSON[obj].__outer__ = iouter
 
-def dumps(o):
-    return  json.dumps(o, default = lambda o: o.value)
+dumps = functools.partial(json.dumps, default = lambda o: o.value)
 
 def col_val(val, end, pend):
     cls = type(val)

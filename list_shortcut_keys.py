@@ -60,13 +60,10 @@ def destructure_bindings(bindings):
 
 class ListShortcutKeys(EditJSONPreferenceBase):
     format_cols   = (3, 4, 0, )
+    extra_rows    = (-2, )
     platform      = sublime.platform().title()
     if platform   == 'Osx': platform = 'OSX'
     settings_pattern  = 'Default( \(%s\))?.sublime-keymap$' % platform
-
-    def format_for_display(self, settings):
-        display = format_for_display(settings, cols=self.format_cols)
-        return list(map(list, zip(display, [a[-2] for a in settings])))
 
     def on_settings_json(self, pkg, name, f, text, settings_json, completions):
         for keys, command, cargs, scope in destructure_bindings(settings_json):

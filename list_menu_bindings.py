@@ -13,12 +13,8 @@ from .commands_base import EditJSONPreferenceBase
 
 class ListMenuBindings(EditJSONPreferenceBase):
     format_cols = (1,3)
+    extra_rows = (-2, -1, )
     settings_pattern = "sublime-menu"
-
-    def format_for_display(self, menus):
-        display = format_for_display(menus, cols=self.format_cols)
-        return list(map(list, zip(display, *[[m[i] for m in menus]
-                                            for i in (-2, -1 )])))
 
     def on_settings_json(self, pkg, name, f, text, menu, completions):
         pkg_display = "%s - %s" % (pkg, name) if name != pkg else pkg

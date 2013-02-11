@@ -33,8 +33,13 @@ class IEditJSONPreference:
         return settings # for quick panel
 
 class EditJSONPreferenceBase(sublime_plugin.WindowCommand, IEditJSONPreference):
-    def format_for_display(self, settings):
-        return format_for_display(settings, cols=self.format_cols)
+    def format_for_display(self, rows):
+        display = format_for_display(rows, cols=self.format_cols)
+        
+        if self.extra_rows:
+            display =  list(map(list, zip(display, *[[m[i] for m in rows]
+                                                    for i in self.extra_rows])))
+        return  display
 
     def run(self):
         window      = self.window
