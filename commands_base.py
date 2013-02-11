@@ -23,6 +23,7 @@ def glob_and_parse_package_json(pattern):
 class IEditJSONPreference:
     "Just factored out all overideables into this class for visibility"
     format_cols = () # MUST_IMPLEMENT
+    extra_rows = ()
     settings_pattern = "*.sublime-json" # MUST OVERRIDE
 
     def on_settings_json(self, pkg, name, f, text, setting_dict, completions):

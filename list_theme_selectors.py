@@ -11,9 +11,10 @@ from .jsonix import dumps as dumpsj
 from .commands_base import EditJSONPreferenceBase
 
 class ListThemeSelectors(EditJSONPreferenceBase):
+    settings_pattern = "sublime-theme"
+
     format_cols = (1, 2)
     extra_rows = (-1, )
-    settings_pattern = "sublime-theme"
 
     def on_settings_json(self, pkg, name, f, text, selectors, completions):
         pkg_display = "%s - %s" % (pkg, name) if name != pkg else pkg
@@ -23,9 +24,9 @@ class ListThemeSelectors(EditJSONPreferenceBase):
             # Popping these badboys from dict so do they aren't just noise in
             # the `extra_rows`
             class_ = selector.pop('class', None)
-            attributes = selector.pop('attributes', '')
+            attributes = selector.pop('attributes', '') # Empty string if none
 
-            if attributes:
+            if attributes: # format these like css @attribue selectors
                 attributes = "[%s]" %  ', '.join(['@'+a for a in attributes])
             css_fmt =  ".%s%s" % (class_, attributes) 
             yield (f, css_fmt, pkg_display, class_, dumpsj(selector))
