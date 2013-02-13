@@ -49,7 +49,7 @@ class EditPackageFiles(sublime_plugin.WindowCommand):
     def run(self, pref_type =None):
         window    = self.window
         files     = list(glob_packages(pref_type))
-        keymap    = 'Default (%s)' % sublime.platform().title()
+        keymap    = 'Default (%s)' % sublime.platform().title() #TODO
 
         if pref_type == 'sublime-keymap':
             display = [(

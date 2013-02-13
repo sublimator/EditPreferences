@@ -10,69 +10,75 @@ import uuid
 # Sublime Libs
 import sublime
 import sublime_plugin
+
+# Sublime Default libs
 from Default.indentation import normed_indentation_pt
 
 # Edit Preferences imports
 from .scheduler import yields_from, input_panel
+from .helpers import inversion_stream, invert_regions, get_setting
 
 ################################### CONSTANTS ##################################
 
+EXTRACTED_SNIPPETS_SETTING = 'extracted-snippets.sublime-settings'
 TAB_STOP_RE = r"(?<!\\)\$(%s)|\$\{(%s)(?::|/)"
 TAB_STOP = re.compile(TAB_STOP_RE % ('\\d+', '\\d+'))
 
-################################### SETTINGS ###################################
+################################### COMMANDS ###################################
 
-def get_setting(s, d=None):
-    settings = sublime.load_settings("edit-preferences.sublime-settings")
-    return settings.get(s, d)
+class ExtractSnippetCommand(sublime_plugin.TextCommand):
+    def is_enabled(self, args=[]):
+        return bool( (self.view.sel() or
+                      self.view.get_regions('auto_select')) )
 
-def get_snippets_path():
-    return get_setting('extracted_snippets_json_path')
+    @yields_from
+    def run(self, edit):
+        view   = self.view
+        window = view.window()
 
-############################### INVERSION HELPERS ##############################
+        view.run_command('auto_select', dict(cmd='merge'))
+        settings = sublime.load_settings(EXTRACTED_SNIPPETS_SETTING)
 
-def inversion_stream(view, regions, start=None, end=None):
-    n = (len(regions) * 2) - 1
+        contents     = extract_snippet(view, edit)
+        scope        = scope_as_snippet(view)
+        the_snippets = settings.get('extracted_snippets')
 
-    end   = end   or view.size()
-    start = start or 0
+        the_snippets.append( dict(
+            scope    = (yield from input_panel('Enter Scope',   scope)),
+            trigger  = (yield from input_panel('Enter Trigger', '')),
+            uuid     = uuid.uuid1().hex,
+            contents = contents ))
 
-    def inner():
-        for reg in regions:
-            yield reg.begin()
-            yield reg.end()
+        settings.set("extracted_snippets", the_snippets)
+        sublime.save_settings(EXTRACTED_SNIPPETS_SETTING)
 
-    for i, pt in enumerate(inner()):
-        if i == 0:
-            if pt == start: continue
-            else:       yield start
+class IncrementTabstops(sublime_plugin.TextCommand):
+    def run(self, edit, args=[]):
+        view = self.view
+        for sel in view.sel():
+            selection = view.substr(sel)
+            view.replace (
+                edit, sel, replace_highest(increment_tabstops(selection)))
 
-        elif i == n:
-            if pt != end:
-                yield pt
-                yield end
+################################### LISTENERS ##################################
 
-            continue
+class ExtractedSnippetsCompletions(sublime_plugin.EventListener):
+    def on_query_completions(self, view, prefix, locations, flags = 0):
+        if not prefix or not get_setting('extracted_snippets_completions'):
+            return []
 
-        yield pt
+        completions = [
+            ("%(trigger)s\t(SnippetCompletions)" %  s, s['contents']) for
+             s in load_snippets() if 'scope' not in s or any(
+             view.match_selector(p, s['scope']) for p in locations) ]
 
-def invert_regions(view=None, regions=[], spanning=False):
-    inverted = []
+        if view.match_selector(locations[0], 'source.js'):
+            extra = view.extract_completions(prefix, locations[0])
+            completions.extend(("%s\t(buffer)" % e, e) for e in extra)
 
-    if spanning is not False: # regions empty eval as False
-        span_start = spanning.begin()
-        span_end   = spanning.end()
-    else:
-        span_start = None
-        span_end = None
+        return (completions, flags )
 
-    for i, pt in enumerate(inversion_stream(view, regions, span_start, span_end)):
-        if i%2 == 0: start = pt
-        else: inverted.append(sublime.Region(start, pt))
-
-    return inverted or [sublime.Region(0, 0)]
-
-################################ CREATE SNIPPET ################################
+############################ EXTRACT SNIPPET HELPERS ###########################
 
 def shares_extents(r1, r2):
     return set([r1.a, r1.b]).intersection(set([r2.a, r2.b]) )
@@ -106,7 +112,15 @@ def extract_snippet(view, edit):
 
     return textwrap.dedent(''.join(snippet)).lstrip()
 
-############################## INCREMENT TAB STOPS #############################
+def scope_as_snippet(view):
+    scope = view.scope.split()
+    return '${1:%s}${2: %s}' % (scope[0], ' '.join(scope[1:]))
+
+def load_snippets():
+    settings = sublime.load_settings(EXTRACTED_SNIPPETS_SETTING)
+    return settings.get("extracted_snippets", [])
+
+########################### INCREMENT TAB STOP HELPES ##########################
 
 def inc_stop(m):
     return re.sub('\d+', lambda d: str(int(d.group()) + 1), m)
@@ -125,69 +139,5 @@ def replace_highest(s):
         lambda m: '%s' % zero_stop(m.group(), h),
         s )
 
-class IncrementTabstops(sublime_plugin.TextCommand):
-    def run(self, edit, args=[]):
-        view = self.view
-        for sel in view.sel():
-            selection = view.substr(sel)
-            view.replace (
-                edit, sel, replace_highest(increment_tabstops(selection)))
-
-################################ EXTRACT SNIPPET ###############################
-
-def scope_as_snippet(view):
-    scope = view.scope.split()
-    return '${1:%s}${2: %s}' % (scope[0], ' '.join(scope[1:]))
-
-def load_snippets():
-    with open(get_snippets_path(), 'r') as fh:
-        try:
-            the_snippets = json.load(fh)
-        except ValueError:
-            the_snippets = []
-        return the_snippets
-
-class ExtractedSnippetsCompletions(sublime_plugin.EventListener):
-    def on_query_completions(self, view, prefix, locations, flags = 0):
-        if ( not prefix or 
-             not get_setting('extracted_snippets_completions') or
-             not get_snippets_path() ): return []
-
-        completions = [
-            ("%(trigger)s\t(SnippetCompletions)" %  s, s['contents']) for
-             s in load_snippets() if 'scope' not in s or any(
-             view.match_selector(p, s['scope']) for p in locations) ]
-
-        if view.match_selector(locations[0], 'source.js'):
-            extra = view.extract_completions(prefix, locations[0])
-            completions.extend(("%s\t(buffer)" % e, e) for e in extra)
-
-        return (completions, flags )
-
-class ExtractSnippetCommand(sublime_plugin.TextCommand):
-    def is_enabled(self, args=[]):
-        return bool( (self.view.sel() or 
-                      self.view.get_regions('auto_select')) and 
-                      get_snippets_path() )
-
-    @yields_from
-    def run(self, edit):
-        view   = self.view
-        window = view.window()
-        view.run_command('auto_select', dict(cmd='merge'))
-
-        contents     = extract_snippet(view, edit)
-        scope        = scope_as_snippet(view)
-        the_snippets = load_snippets()
-
-        the_snippets.append( dict(
-            scope    = (yield from input_panel('Enter Scope',   scope)),
-            trigger  = (yield from input_panel('Enter Trigger', '')),
-            uuid     = uuid.uuid1().hex,
-            contents = contents ))
-
-        with open(get_snippets_path(), 'w') as fh:
-            json.dump( sorted(the_snippets, key=lambda s: s['trigger']),
-                       fh, indent=4 )
 
 ################################################################################

@@ -1,4 +1,3 @@
 {
-    "extracted_snippets_json_path" : "",
-    "extracted_snippets_completions" : "",
+    "extracted_snippets_completions" : false
 }

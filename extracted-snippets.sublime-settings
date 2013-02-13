@@ -1,0 +1,5 @@
+{
+    // This key will be saved in User/extracted-snippets.sublime-settings using
+    // the sublime.save_settings() api
+    "extracted_snippets" : []
+}

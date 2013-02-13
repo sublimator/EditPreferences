@@ -21,6 +21,55 @@ PREFIX_ZIP_PACKAGE_RELATIVE = re.compile("(?P<prefix>.*)/"
                                          "(?P<package>.*?)\.sublime-package/"
                                          "(?P<relative>.*)")
 
+############################### SETTINGS HELPERS ###############################
+
+def get_setting(s, d=None):
+    settings = sublime.load_settings("edit-preferences.sublime-settings")
+    return settings.get(s, d)
+
+############################### INVERSION HELPERS ##############################
+
+def inversion_stream(view, regions, start=None, end=None):
+    n = (len(regions) * 2) - 1
+
+    end   = end   or view.size()
+    start = start or 0
+
+    def inner():
+        for reg in regions:
+            yield reg.begin()
+            yield reg.end()
+
+    for i, pt in enumerate(inner()):
+        if i == 0:
+            if pt == start: continue
+            else:       yield start
+
+        elif i == n:
+            if pt != end:
+                yield pt
+                yield end
+
+            continue
+
+        yield pt
+
+def invert_regions(view=None, regions=[], spanning=False):
+    inverted = []
+
+    if spanning is not False: # regions empty eval as False
+        span_start = spanning.begin()
+        span_end   = spanning.end()
+    else:
+        span_start = None
+        span_end = None
+
+    for i, pt in enumerate(inversion_stream(view, regions, span_start, span_end)):
+        if i%2 == 0: start = pt
+        else: inverted.append(sublime.Region(start, pt))
+
+    return inverted or [sublime.Region(0, 0)]
+
 #################################### HELPERS ###################################
 
 def package_name_and_package_relative_path(fn):
