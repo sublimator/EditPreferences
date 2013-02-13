@@ -81,7 +81,7 @@ class ExtractedSnippetsCompletions(sublime_plugin.EventListener):
 ############################ EXTRACT SNIPPET HELPERS ###########################
 
 def shares_extents(r1, r2):
-    return set([r1.a, r1.b]).intersection(set([r2.a, r2.b]) )
+    return {r1.a, r1.b} & {r2.a, r2.b}
 
 def extract_snippet(view, edit):
     # Reset start end_points
@@ -138,6 +138,5 @@ def replace_highest(s):
         TAB_STOP_RE % (h,h),
         lambda m: '%s' % zero_stop(m.group(), h),
         s )
-
 
 ################################################################################
