@@ -16,6 +16,7 @@ class ListSettings(EditJSONPreferenceBase):
         completions.update(re.findall(r'\w+', text))
 
         for setting, value in list(setting_dict.items()):
+            if setting == 'extracted_snippets': continue
             yield (f, pkg_display, setting, dumpsj(value), value)
 
     def on_selection(self, setting):

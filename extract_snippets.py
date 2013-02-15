@@ -6,6 +6,7 @@ import re
 import json
 import bisect
 import uuid
+import pprint
 
 # Sublime Libs
 import sublime
@@ -26,7 +27,7 @@ TAB_STOP = re.compile(TAB_STOP_RE % ('\\d+', '\\d+'))
 
 ################################### COMMANDS ###################################
 
-class ExtractSnippetCommand(sublime_plugin.TextCommand):
+class ExtractSnippet(sublime_plugin.TextCommand):
     def is_enabled(self, args=[]):
         return bool( (self.view.sel() or
                       self.view.get_regions('auto_select')) )
@@ -40,12 +41,14 @@ class ExtractSnippetCommand(sublime_plugin.TextCommand):
         settings = sublime.load_settings(EXTRACTED_SNIPPETS_SETTING)
 
         contents     = extract_snippet(view, edit)
+        trigger      = "${1:%s}" %  (re.findall('\w+', contents) + [''])[0]
+
         scope        = scope_as_snippet(view)
         the_snippets = settings.get('extracted_snippets')
 
         the_snippets.append( dict(
             scope    = (yield from input_panel('Enter Scope',   scope)),
-            trigger  = (yield from input_panel('Enter Trigger', '')),
+            trigger  = (yield from input_panel('Enter Trigger', trigger)),
             uuid     = uuid.uuid1().hex,
             contents = contents ))
 
@@ -87,17 +90,21 @@ def extract_snippet(view, edit):
     # Reset start end_points
     span               = view.sel()[0].cover(view.sel()[-1])
     tab_stops          = [s for s in view.sel() if not
-                          (shares_extents(s, span) and s.empty())]
+                          ( shares_extents(s, span) and s.empty() ) ]
     snippet            = [ normed_indentation_pt(view, span, non_space=True) *
                            ' ']
     tab_stop_map       = {}
     i                  = 0
 
-    for region in [ sublime.Region(r.begin(), r.end(), 666) for r in
-                    invert_regions(regions=tab_stops, spanning=span) ]:
-        bisect.insort(tab_stops, region)
+    if tab_stops:
+        all_regions = [ sublime.Region(r.begin(), r.end(), 666) for r in
+                        invert_regions(regions=tab_stops, spanning=span) ]
+    else:
+        all_regions = [sublime.Region(span.a, span.b, 666)]
 
-    for region in tab_stops:
+    for region in tab_stops: bisect.insort(all_regions, region)
+
+    for region in all_regions:
         text = (view.substr(region)
                     .replace('\\', '\\\\')
                     .replace('$', '\\$'))
@@ -110,11 +117,14 @@ def extract_snippet(view, edit):
 
         snippet.append(text)
 
-    return textwrap.dedent(''.join(snippet)).lstrip()
+    dedented = textwrap.dedent(''.join(snippet)).lstrip()
+    assert dedented, ("Issues \n\n%s" % pprint.pformat(locals()))
+
+    return dedented
 
 def scope_as_snippet(view):
     scope = view.scope.split()
-    return '${1:%s}${2: %s}' % (scope[0], ' '.join(scope[1:]))
+    return '${2:%s}${1: %s}' % (scope[0], ' '.join(scope[1:]))
 
 def load_snippets():
     settings = sublime.load_settings(EXTRACTED_SNIPPETS_SETTING)

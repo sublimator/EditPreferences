@@ -10,7 +10,8 @@ from linecache import checkcache
 import sublime_plugin
 
 from . helpers import plugin_name, normalise_to_open_file_path,\
-                      package_name_and_package_relative_path
+                      package_name_and_package_relative_path,\
+                      temporary_event_handler
 
 ################################################################################
 
@@ -18,6 +19,7 @@ class ListCommands(sublime_plugin.WindowCommand):
     def run(self, args=[]):
         window = self.window
         commands = []
+        completions = set()
         the_cmds = list(zip(('Application', 'Window', 'Text'),
                             sublime_plugin.all_command_classes ))
 
@@ -26,19 +28,12 @@ class ListCommands(sublime_plugin.WindowCommand):
 
         for cmd_type, cmds in the_cmds:
             cmds = dict( ( plugin_name(t), t) for t in cmds)
-
-            # print(cmds)
+            completions.add(cmd_type)
 
             for cmd_name, cmd in list(cmds.items()):
-                # cmd = cmd
-
+                completions.add(cmd_name)
                 try:
                     f = os.path.normpath(inspect.getsourcefile(cmd))
-
-                    # TODO
-                    # TODO: filename relative to package
-                    # pkg = f.split(sep)[len(sublime.packages_path().split(sep))]
-
                     pkg, relative = package_name_and_package_relative_path(f)
                     pkg = "%s/%s" % (pkg, relative)
 
@@ -47,14 +42,17 @@ class ListCommands(sublime_plugin.WindowCommand):
                         f,
                         cmd
                     )]
-                except:
-                    print ("Exceptional")
-                    print (cmd)
+                except Exception as e:
+                    print ("ListCommands error", cmd, e)
 
         commands.sort(key=lambda i:i[0])
         display = ['/'.join(i[0]) for i in commands]
 
+        ch = temporary_event_handler( lambda *a: [(c,c) for c in completions],
+                                      'on_query_completions')
         def on_select(i):
+            ch.remove()
+
             if i != -1:
                 cmd = commands[i]
                 cmd_type = cmd[0][0]

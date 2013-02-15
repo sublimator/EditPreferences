@@ -56,5 +56,5 @@ class OpenFileEnhanced(sublime_plugin.WindowCommand):
                         'select_regions', dict( regions=regions, 
                                                 show_surrounds=True ))
                 
-                window.focus_view(open_file_view)
+                sublime.active_window().focus_view(open_file_view)
         do()
