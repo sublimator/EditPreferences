@@ -181,12 +181,12 @@ def enumerate_installed_packages():
                                  sublime.installed_packages_path()]
 
     installed_packages       = ([
-            {"zip"    : False, 
+            {"zip"    : False,
              "folder" : join(sublime.packages_path(), d),
              "name"   : d}
-        for 
+        for
             d in os.listdir(sublime.packages_path())
-        if 
+        if
             isdir (join(sublime.packages_path(), d))
     ])
 
@@ -279,7 +279,6 @@ def list_package_dir(package_info):
 
     return contents
 
-# open_file_path
 def package_file_contents(fn):
     fn = re.sub(r'\\', '/', fn)
 
@@ -290,8 +289,16 @@ def package_file_contents(fn):
             f = m.groupdict()['relative']
             return z.read(f).decode('utf-8')
     else:
-        with open(fn, 'r', encoding='utf-8') as fh:
-            return fh.read()
+        if os.path.exists(fn):
+            with open(fn, 'r', encoding='utf-8') as fh:
+                return fh.read()
+        else:
+            pkg, relative = package_name_and_package_relative_path(fn)
+            
+            # print(locals())
+            return package_file_contents( os.path.join(
+                            package_info_lookup()[pkg]['zip'], #TODO `zip_path`
+                            relative ))
 
 def testicle():
     # the_view = sublime.active_window().active_view()
