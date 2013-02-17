@@ -15,12 +15,6 @@ from collections import defaultdict
 import sublime
 import sublime_plugin
 
-################################### CONSTANTS ##################################
-
-PREFIX_ZIP_PACKAGE_RELATIVE = re.compile("(?P<prefix>.*)/"
-                                         "(?P<package>.*?)\.sublime-package/"
-                                         "(?P<relative>.*)")
-
 ############################### SETTINGS HELPERS ###############################
 
 def get_setting(s, d=None):
@@ -72,55 +66,55 @@ def invert_regions(view=None, regions=[], spanning=False):
 
 #################################### HELPERS ###################################
 
-def package_name_and_package_relative_path(fn):
-    m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn )
+# def package_name_and_package_relative_path(fn):
+#     m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn )
 
-    if m is not None:
-        d = m.groupdict()
-        return d['package'], d['relative']
-    else:
-        # TODO: fix this horrid code!
-        sep = os.path.sep
-        pkg = fn.split(sep)[len(sublime.packages_path().split(sep))]
-        return (pkg,
-                fn[len(sublime.packages_path()) + 1 + len(pkg) + 1:])
+#     if m is not None:
+#         d = m.groupdict()
+#         return d['package'], d['relative']
+#     else:
+#         # TODO: fix this horrid code!
+#         sep = os.path.sep
+#         pkg = fn.split(sep)[len(sublime.packages_path().split(sep))]
+#         return (pkg,
+#                 fn[len(sublime.packages_path()) + 1 + len(pkg) + 1:])
 
-def get_zip_file_and_relative(fn):
-    m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn )
+# def get_zip_file_and_relative(fn):
+#     m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn )
 
-    if m is not None:
-        d = m.groupdict()
-        zip_file = "%(prefix)s/%(package)s.sublime-package" % d
-        f = d['relative']
-        return zip_file, f
-    else:
-        return False, fn
+#     if m is not None:
+#         d = m.groupdict()
+#         zip_file = "%(prefix)s/%(package)s.sublime-package" % d
+#         f = d['relative']
+#         return zip_file, f
+#     else:
+#         return False, fn
 
-def package_file_exists(fn):
-    """
+# def package_file_exists(fn):
+#     """
     
-    :fn:
+#     :fn:
     
-        Could be an actual path or a pseudo path
-    """
+#         Could be an actual path or a pseudo path
+#     """
 
-    zip_file, path = get_zip_file_and_relative(fn)
+#     zip_file, path = get_zip_file_and_relative(fn)
 
-    if zip_file:
-        with zipfile.ZipFile(zip_file, 'r') as zip:
-            return any(p == path for p in zip.namelist())
-    else:
-        return os.path.exists(fn)
+#     if zip_file:
+#         with zipfile.ZipFile(zip_file, 'r') as zip:
+#             return any(p == path for p in zip.namelist())
+#     else:
+#         return os.path.exists(fn)
 
-def open_file_path(fn):
-    """
-    Formats a path as /C/some/path/on/windows/no/colon.txt that is suitable to
-    be passed as the `file` arg to the `open_file` command.
-    """
-    fn = normpath(fn)
-    fn = re.sub('^([a-zA-Z]):', '/\\1', fn)
-    fn = re.sub(r'\\', '/', fn)
-    return fn
+# def open_file_path(fn):
+#     """
+#     Formats a path as /C/some/path/on/windows/no/colon.txt that is suitable to
+#     be passed as the `file` arg to the `open_file` command.
+#     """
+#     fn = normpath(fn)
+#     fn = re.sub('^([a-zA-Z]):', '/\\1', fn)
+#     fn = re.sub(r'\\', '/', fn)
+#     return fn
 
 def view_related_packages(view):
     """
@@ -158,158 +152,158 @@ def view_related_packages(view):
     dirs.append(syntax_package)
     return dirs
 
-def enumerate_installed_packages():
-    """
+# def enumerate_installed_packages():
+#     """
     
-    return 
+#     return 
         
-        A list of dicts()
+#         A list of dicts()
         
         
-        eg.  
-        [
-            {"zip": False, "name": "User"},
-            {"zip": "$abs_path_to_sublime_package_zip", "name": "Default"}
-        ]
+#         eg.  
+#         [
+#             {"zip": False, "name": "User"},
+#             {"zip": "$abs_path_to_sublime_package_zip", "name": "Default"}
+#         ]
 
-    """
+#     """
 
-    zipped_package_locations = []
-    near_executable          = join(dirname(sublime.executable_path()),
-                                    'Packages')
-    zipped_package_locations = [ near_executable,
-                                 sublime.installed_packages_path()]
+#     zipped_package_locations = []
+#     near_executable          = join(dirname(sublime.executable_path()),
+#                                     'Packages')
+#     zipped_package_locations = [ near_executable,
+#                                  sublime.installed_packages_path()]
 
-    installed_packages       = ([
-            {"zip"    : False,
-             "folder" : join(sublime.packages_path(), d),
-             "name"   : d}
-        for
-            d in os.listdir(sublime.packages_path())
-        if
-            isdir (join(sublime.packages_path(), d))
-    ])
+#     installed_packages       = ([
+#             {"zip"    : False,
+#              "folder" : join(sublime.packages_path(), d),
+#              "name"   : d}
+#         for
+#             d in os.listdir(sublime.packages_path())
+#         if
+#             isdir (join(sublime.packages_path(), d))
+#     ])
 
-    for location in zipped_package_locations:
-        packages_pattern = location + '/*.sublime-package'
-        packages = glob.glob(packages_pattern)
+#     for location in zipped_package_locations:
+#         packages_pattern = location + '/*.sublime-package'
+#         packages = glob.glob(packages_pattern)
 
-        for package in packages:
-            package_info = dict (
-                folder=False, zip=package, name=basename(splitext(package)[0]))
-            installed_packages.append(package_info)
+#         for package in packages:
+#             package_info = dict (
+#                 folder=False, zip=package, name=basename(splitext(package)[0]))
+#             installed_packages.append(package_info)
 
-    return installed_packages
+#     return installed_packages
 
-def package_info_lookup():
-    """
+# def package_info_lookup():
+#     """
     
-    returns:
-        A dict keyed by the package name with values of
+#     returns:
+#         A dict keyed by the package name with values of
             
-            {zip : False or abspath, 
-            folder: False or abspath }
-    """
+#             {zip : False or abspath, 
+#             folder: False or abspath }
+#     """
 
-    mapping = defaultdict(dict)
-    packages = enumerate_installed_packages()
+#     mapping = defaultdict(dict)
+#     packages = enumerate_installed_packages()
 
-    for package in packages:
-        pkg = mapping[package["name"]]
-        pkg["name"] = package["name"] # redundant but makes these self contained
-        pkg["zip"]    = pkg.get("zip") or package["zip"]
-        pkg["folder"] = pkg.get("folder") or package["folder"]
+#     for package in packages:
+#         pkg = mapping[package["name"]]
+#         pkg["name"] = package["name"] # redundant but makes these self contained
+#         pkg["zip"]    = pkg.get("zip") or package["zip"]
+#         pkg["folder"] = pkg.get("folder") or package["folder"]
 
-    return dict(mapping)
+#     return dict(mapping)
 
-def contextual_packages_list(view=None):
-    if view is None:
-        view = sublime.active_window().active_view()
+# def contextual_packages_list(view=None):
+#     if view is None:
+#         view = sublime.active_window().active_view()
 
-    contextual = view_related_packages(view)
-    others = sorted(set((f["name"] for f in enumerate_installed_packages()
-                       if f["name"] not in contextual)),
-                      key = lambda f: f.lower())
+#     contextual = view_related_packages(view)
+#     others = sorted(set((f["name"] for f in enumerate_installed_packages()
+#                        if f["name"] not in contextual)),
+#                       key = lambda f: f.lower())
 
-    ignored = set((sublime.load_settings('Preferences.sublime-settings')
-                         .get('ignored_packages')))
+#     ignored = set((sublime.load_settings('Preferences.sublime-settings')
+#                          .get('ignored_packages')))
 
-    return [f for f in (contextual + others) if f not in ignored]
+#     return [f for f in (contextual + others) if f not in ignored]
 
-def list_package_dir(package_info):
-    """
+# def list_package_dir(package_info):
+#     """
 
-    returns:
-        A dict keyed by the file name with values of
+#     returns:
+#         A dict keyed by the file name with values of
 
-            {
-            name:  basename of file
-            zip_file : False or abspath, 
-            folder_file: False or abspath }
+#             {
+#             name:  basename of file
+#             zip_file : False or abspath, 
+#             folder_file: False or abspath }
 
-    """
+#     """
 
-    zip_file = package_info['zip']
-    folder = package_info['folder']
+#     zip_file = package_info['zip']
+#     folder = package_info['folder']
 
-    zip_files = []
+#     zip_files = []
 
-    if zip_file:
-        z = zipfile.ZipFile(zip_file, 'r')
-        zip_files = sorted([i.filename for i in z.infolist() if not '/' in i.filename])
-        z.close()
+#     if zip_file:
+#         z = zipfile.ZipFile(zip_file, 'r')
+#         zip_files = sorted([i.filename for i in z.infolist() if not '/' in i.filename])
+#         z.close()
 
-    contents = defaultdict (
-            lambda: dict (
-            name = None,
-            zip_path=False,
-            folder_path=False ))
+#     contents = defaultdict (
+#             lambda: dict (
+#             name = None,
+#             zip_path=False,
+#             folder_path=False ))
 
-    for f in zip_files:
-        f_info = contents[f]
-        f_info['name'] = f
-        f_info['zip_path'] = os.path.join(zip_file, f)
+#     for f in zip_files:
+#         f_info = contents[f]
+#         f_info['name'] = f
+#         f_info['zip_path'] = os.path.join(zip_file, f)
 
-    if folder:
-        for f in os.listdir(folder):
-            f_info = contents[f]
+#     if folder:
+#         for f in os.listdir(folder):
+#             f_info = contents[f]
 
-            f_info['name'] = f
-            f_info['folder_path'] = os.path.join(folder, f)
+#             f_info['name'] = f
+#             f_info['folder_path'] = os.path.join(folder, f)
 
-    return contents
+#     return contents
 
-def package_file_contents(fn):
-    fn = re.sub(r'\\', '/', fn)
+# def package_file_contents(fn):
+#     fn = re.sub(r'\\', '/', fn)
 
-    m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn)
-    if m is not None:
-        zip_file = "%(prefix)s/%(package)s.sublime-package" % m.groupdict()
-        with zipfile.ZipFile(zip_file, 'r') as z:
-            f = m.groupdict()['relative']
-            return z.read(f).decode('utf-8')
-    else:
-        if os.path.exists(fn):
-            with open(fn, 'r', encoding='utf-8') as fh:
-                return fh.read()
-        else:
-            pkg, relative = package_name_and_package_relative_path(fn)
+#     m = PREFIX_ZIP_PACKAGE_RELATIVE.search(fn)
+#     if m is not None:
+#         zip_file = "%(prefix)s/%(package)s.sublime-package" % m.groupdict()
+#         with zipfile.ZipFile(zip_file, 'r') as z:
+#             f = m.groupdict()['relative']
+#             return z.read(f).decode('utf-8')
+#     else:
+#         if os.path.exists(fn):
+#             with open(fn, 'r', encoding='utf-8') as fh:
+#                 return fh.read()
+#         else:
+#             pkg, relative = package_name_and_package_relative_path(fn)
             
-            # print(locals())
-            return package_file_contents( os.path.join(
-                            package_info_lookup()[pkg]['zip'], #TODO `zip_path`
-                            relative ))
+#             # print(locals())
+#             return package_file_contents( os.path.join(
+#                             package_info_lookup()[pkg]['zip'], #TODO `zip_path`
+#                             relative ))
 
-def testicle():
-    # the_view = sublime.active_window().active_view()
-    # print (repr(the_view))
-    # print (view_related_packages(the_view))
-    # print ("FFFF")
+# def testicle():
+#     # the_view = sublime.active_window().active_view()
+#     # print (repr(the_view))
+#     # print (view_related_packages(the_view))
+#     # print ("FFFF")
 
 
-    path = "/home/nick/sublime_text_3/Packages/Default.sublime-package/sort.py"
-    print(get_zip_file_and_relative(path))
-    print(package_file_exists(path))
+#     path = "/home/nick/sublime_text_3/Packages/Default.sublime-package/sort.py"
+#     print(get_zip_file_and_relative(path))
+#     print(package_file_exists(path))
 
 
     # from pprint import pprint
@@ -361,54 +355,54 @@ def testicle():
 
 ##################################### TODO #####################################
 
-def glob_packages(file_type='sublime-keymap', view=None):
+# def glob_packages(file_type='sublime-keymap', view=None):
 
-    if isinstance(file_type, str):
-        file_type = file_type.replace('%PLATFORM%', sublime.platform())
-        if '.' not in file_type:
-            file_type = '.*\.%s$' % file_type
-        file_type = re.compile(file_type)
+#     if isinstance(file_type, str):
+#         file_type = file_type.replace('%PLATFORM%', sublime.platform())
+#         if '.' not in file_type:
+#             file_type = '.*\.%s$' % file_type
+#         file_type = re.compile(file_type)
 
-    lookup = package_info_lookup()
+#     lookup = package_info_lookup()
 
-    for pkg in contextual_packages_list(view):
-        pkg_info = lookup[pkg]
+#     for pkg in contextual_packages_list(view):
+#         pkg_info = lookup[pkg]
 
-        found_files = []
-        for f, file_info in sorted(list_package_dir(pkg_info).items()):
+#         found_files = []
+#         for f, file_info in sorted(list_package_dir(pkg_info).items()):
 
-            if file_type.match(f):
-                if file_info['folder_path']:
-                    found_files.append(file_info['folder_path'])
-                else:
-                    found_files.append(file_info['zip_path'])
+#             if file_type.match(f):
+#                 if file_info['folder_path']:
+#                     found_files.append(file_info['folder_path'])
+#                 else:
+#                     found_files.append(file_info['zip_path'])
 
-        for f in found_files:
-            yield pkg, splitext(basename(f))[0], f
+#         for f in found_files:
+#             yield pkg, splitext(basename(f))[0], f
 
 ################################################################################
 
 
 # print (list(glob_packages()))
 
-def normalise_to_open_file_path(file_name):
-    """
+# def normalise_to_open_file_path(file_name):
+#     """
     
-    :file_name:
+#     :file_name:
     
-        A str that could actually be a pseudo path to a file nested inside a
-        `sublime-package` file.
+#         A str that could actually be a pseudo path to a file nested inside a
+#         `sublime-package` file.
     
-    The command `open_file` has magic to open file contained in zip files, or in
-    extracted folder overrides.
+#     The command `open_file` has magic to open file contained in zip files, or in
+#     extracted folder overrides.
     
-    """
+#     """
 
-    m = PREFIX_ZIP_PACKAGE_RELATIVE.search(file_name )
-    if m is not None:
-        return "${packages}/%(package)s/%(relative)s" % m.groupdict()
-    else:
-        return file_name
+#     m = PREFIX_ZIP_PACKAGE_RELATIVE.search(file_name )
+#     if m is not None:
+#         return "${packages}/%(package)s/%(relative)s" % m.groupdict()
+#     else:
+#         return file_name
 
 # print (normalise_to_open_file_path('/home/nick/sublime_text_3/Packages/Vintage.sublime-package/Default (Linux).sublime-keymap'))
 

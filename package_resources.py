@@ -1,0 +1,1 @@
+/home/nick/.config/sublime-text-3/Packages/PackageResources/package_resources.py

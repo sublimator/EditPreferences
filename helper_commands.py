@@ -5,7 +5,7 @@
 import sublime
 import sublime_plugin
 
-from .helpers import open_file_path
+from .package_resources import norm_path_to_sublime_style
 
 ################################ HELPER COMMANDS ###############################
 
@@ -32,14 +32,14 @@ class SelectRegions(sublime_plugin.TextCommand):
 
 class OpenFileEnhanced(sublime_plugin.WindowCommand):
     def run(self, file, line=None, regions=None, **kw):
-        
-        file = open_file_path(file)
+        fn = norm_path_to_sublime_style(file)
         
         window = self.window
-        kw['file'] = file
+        kw['file'] = fn
         window.run_command("open_file", kw)
 
-        full_name = (file.replace("${packages}/", 
+        # The pseudo zip file View.file_name() will be this
+        full_name = (fn.replace("${packages}/", 
                                    sublime.packages_path() + '/'))
         
         open_file_view = self.window.find_open_file(full_name)

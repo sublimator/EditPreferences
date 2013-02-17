@@ -12,8 +12,8 @@ import sublime
 
 from .quick_panel_cols import format_for_display
 
-from .helpers import glob_packages, normalise_to_open_file_path, \
-                     package_file_exists
+from .package_resources import glob_packages, package_file_exists,\
+                               norm_path_to_sublime_style, platform_specifier
 
 ################################### CONSTANTS ##################################
 
@@ -42,14 +42,14 @@ def open_preference_optionally_creating(f, window):
             with open(f, 'w') as fh:
                 fh.write(to_write)
 
-    fn    = normalise_to_open_file_path(f)
+    fn    = norm_path_to_sublime_style(f)
     window.run_command("open_file_enhanced", {"file" :  (fn)})
 
 class EditPackageFiles(sublime_plugin.WindowCommand):
     def run(self, pref_type =None):
         window    = self.window
         files     = list(glob_packages(pref_type))
-        keymap    = 'Default (%s)' % sublime.platform().title() #TODO
+        keymap    = 'Default (%s)' % platform_specifier()
 
         if pref_type == 'sublime-keymap':
             display = [(

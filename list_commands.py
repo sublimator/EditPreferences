@@ -9,9 +9,9 @@ from linecache import checkcache
 # Sublime Libs
 import sublime_plugin
 
-from . helpers import plugin_name, normalise_to_open_file_path,\
-                      package_name_and_package_relative_path,\
-                      temporary_event_handler
+from . helpers import plugin_name, temporary_event_handler
+from . package_resources import norm_path_to_sublime_style#,\
+                               # package_name_and_package_relative_path
 
 ################################################################################
 
@@ -65,7 +65,7 @@ class ListCommands(sublime_plugin.WindowCommand):
 
                 line_num_one_based = inspect.getsourcelines(obj)[-1]
                 file_name = os.path.normpath(cmd[1])
-                file_name = normalise_to_open_file_path(file_name)
+                # file_name = normalise_to_open_file_path(file_name)
 
                 window.run_command("open_file_enhanced",
                     {"file" :  (file_name),

@@ -1,7 +1,7 @@
 [
  
     { "keys": ["ctrl+alt+shift+g"],  "command":  "edit_package_files",
-                                        "args": {"pref_type": "py"} },
+                                        "args": {"pref_type": "^[^/\\\\]+\\.py$"} },
 
     { "keys": ["ctrl+alt+shift+k"],  "command":  "list_shortcut_keys"},
     { "keys": ["ctrl+alt+shift+c"],  "command":  "list_commands" },

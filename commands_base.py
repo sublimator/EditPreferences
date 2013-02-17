@@ -5,12 +5,19 @@
 import sublime_plugin
 
 from .quick_panel_cols import format_for_display
-from .helpers import glob_packages, temporary_event_handler, \
-                     package_file_contents, normalise_to_open_file_path
+from .helpers import temporary_event_handler
+
+from .package_resources import glob_packages, package_file_contents, \
+            package_file_path_to_open_file_path
+
 from .jsonix import decode_with_ix, strip_json_comments, loads as loadsj
 
 def glob_and_parse_package_json(pattern):
-    for pkg, name, f in glob_packages(pattern):
+    for pkg, name, f in glob_packages(
+                    pattern,
+                    ignored_packages=True,
+                    package_sort_key=lambda p: (p!="User", p=="Default", p)):
+
         text = package_file_contents(f)
         text = strip_json_comments(text)
         if not text: continue
@@ -36,7 +43,7 @@ class IEditJSONPreference:
 class EditJSONPreferenceBase(sublime_plugin.WindowCommand, IEditJSONPreference):
     def format_for_display(self, rows):
         display = format_for_display(rows, cols=self.format_cols)
-        
+
         if self.extra_rows:
             display =  list(map(list, zip(display, *[[m[i] for m in rows]
                                                     for i in self.extra_rows])))
@@ -63,7 +70,7 @@ class EditJSONPreferenceBase(sublime_plugin.WindowCommand, IEditJSONPreference):
 
             if i != -1:
                 fn, lineno, regions = self.on_selection(settings[i])
-                fn = normalise_to_open_file_path(fn)
+                fn = package_file_path_to_open_file_path(fn)
                 window.run_command("open_file_enhanced", {"file" :  (fn),
                                                           "regions" : regions})
 
