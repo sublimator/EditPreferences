@@ -177,7 +177,7 @@ def _package_file_helper(fn, encoding='utf-8', only_exists=False):
             else:                kw = dict(mode='rU', encoding=encoding)
 
             try:
-                with codecs.open(fn, **kw) as fh:
+                with open(fn, **kw) as fh:
                     return fh.read()
             except IOError:
                 if os.path.exists(fn):
@@ -203,6 +203,11 @@ def _package_file_helper(fn, encoding='utf-8', only_exists=False):
 
 def package_partial(**kw):
     return functools.partial(_package_file_helper, **kw)
+
+# def package_file_contents(p):
+#     contents = _package_file_helper(p)
+#     if contents is not None:
+#         return contents.replace('\r\n', '\n').replace('\r', '\n')
 
 package_file_exists = package_partial(only_exists=True)
 package_file_contents = _package_file_helper

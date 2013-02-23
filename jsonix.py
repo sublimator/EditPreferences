@@ -133,7 +133,9 @@ def json_filter(text):
             yield c
 
 def sanitize_json(text):
-    return ''.join(json_filter(text))
+    sanitized = ''.join(json_filter(text))
+    assert len(sanitized) == len(text)
+    return sanitized
 
 def strip_json_comments(text):
     return sanitize_json(text)
@@ -242,7 +244,7 @@ if 0:
         print (a_str)
         print (type(a_str))
 
-if 0:
+if 1:
     with decode_with_ix():
 
         b = Boolean(False)
@@ -267,13 +269,13 @@ if 0:
 
         v = '{  "key": [1,2,3,4] }'
         ju = loads(v)
-        print (type(ju))
+        # print (type(ju))
 
         assert v[slice(*ju.__inner__())] == '  "key": [1,2,3,4] '
         assert v[slice(*ju.__outer__())] == v
 
-        print (type(list(ju.keys())[0]) )
-        print (type(ju["key"]))
+        # print (type(list(ju.keys())[0]) )
+        # print (type(ju["key"]))
 
         assert v[slice(*ju["key"].__outer__())] == '[1,2,3,4] '
         # # assert
@@ -291,5 +293,26 @@ if 0:
         v = '{  "key": false }'
         ju = loads(v)
 
-        print (type(ju["key"]))
-        print ((ju["key"].__inner__()))
+        # print (type(ju["key"]))
+        # print ((ju["key"].__inner__()))
+        
+        
+        
+        
+        v = '{  "key": "", "key2" : true }'
+        ju = loads(v)
+
+        assert v[slice(*ju["key"].__inner__())] == ''
+        assert v[slice(*ju["key"].__outer__())] == '""'
+        assert v[slice(*ju["key2"].__outer__())] == 'true'
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

@@ -11,8 +11,8 @@ import sublime_plugin
 
 from . helpers import plugin_name, temporary_event_handler
 from . package_resources import norm_path_to_sublime_style,\
-                                decompose_package_file_path
-                               # package_name_and_package_relative_path
+                                decompose_package_file_path,\
+                               package_file_path_to_open_file_path
 
 def package_name_and_package_relative_path(p):
     pkg, rel, _, __ = decompose_package_file_path(p)
@@ -70,10 +70,10 @@ class ListCommands(sublime_plugin.WindowCommand):
 
                 line_num_one_based = inspect.getsourcelines(obj)[-1]
                 file_name = os.path.normpath(cmd[1])
-                # file_name = normalise_to_open_file_path(file_name)
+                file_name = package_file_path_to_open_file_path(file_name)
 
                 window.run_command("open_file_enhanced",
-                    {"file" :  (file_name),
-                     "line" : line_num_one_based})
+                                    {"file" : (file_name),
+                                     "line" : line_num_one_based})
 
         window.show_quick_panel(display, on_select, 1)

@@ -8,7 +8,8 @@ from .jsonix import dumps as dumpsj
 from .commands_base import EditJSONPreferenceBase
 
 class ListSettings(EditJSONPreferenceBase):
-    format_cols = (2,1,3)
+    format_cols = (2, 1, )
+    extra_rows = (3, )
     settings_pattern = 'sublime-settings'
 
     def on_settings_json(self, pkg, name, f, text, setting_dict, completions):

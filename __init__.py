@@ -2,6 +2,9 @@ import sublime
 import sublime_api
 
 def plugin_loaded():
+    if sublime.version() >= '3013':
+        return
+    
     try:
         sublime.Selection.__getitem__.__patched__
         return

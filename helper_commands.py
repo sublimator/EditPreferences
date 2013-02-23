@@ -29,6 +29,7 @@ class SelectRegions(sublime_plugin.TextCommand):
         
         if view.sel():
             view.show(view.line(view.sel()[0]).begin(), show_surrounds)
+            view.show_at_center(view.sel()[0])
 
 class OpenFileEnhanced(sublime_plugin.WindowCommand):
     def run(self, file, line=None, regions=None, **kw):
@@ -48,6 +49,9 @@ class OpenFileEnhanced(sublime_plugin.WindowCommand):
             if open_file_view.is_loading():
                 sublime.set_timeout(do, 10)
             else:
+                window.focus_view(open_file_view)
+                window.focus_group(window.get_view_index(open_file_view)[0])
+
                 if line is not None:
                     open_file_view.run_command (
                         'goto_line_number', dict(line=line))
@@ -55,6 +59,4 @@ class OpenFileEnhanced(sublime_plugin.WindowCommand):
                     open_file_view.run_command (
                         'select_regions', dict( regions=regions, 
                                                 show_surrounds=True ))
-                window.focus_view(open_file_view)
-                window.focus_group(window.get_view_index(open_file_view)[0])
         do()
