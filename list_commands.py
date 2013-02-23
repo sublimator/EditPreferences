@@ -10,8 +10,13 @@ from linecache import checkcache
 import sublime_plugin
 
 from . helpers import plugin_name, temporary_event_handler
-from . package_resources import norm_path_to_sublime_style#,\
+from . package_resources import norm_path_to_sublime_style,\
+                                decompose_package_file_path
                                # package_name_and_package_relative_path
+
+def package_name_and_package_relative_path(p):
+    pkg, rel, _, __ = decompose_package_file_path(p)
+    return pkg, rel
 
 ################################################################################
 
