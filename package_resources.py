@@ -115,6 +115,7 @@ def decompose_package_file_path(pth):
     
     """
 
+    pth = re.sub(r'\\', '/', pth)
     if pth.startswith("Packages/"):
         _, package, relative = pth.split("/", 2)
         return package, relative, PATH_CONFIG_RELATIVE, None
