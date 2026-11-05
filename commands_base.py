@@ -26,7 +26,7 @@ def glob_and_parse_package_json(pattern):
             try:
                 setting_dict = loadsj(text)
             except Exception as e:
-                print("glob_and_parse_package_json error: ", f, e)
+                print("EditPreferences: couldn't parse %s: %s" % (f, e))
                 continue
 
         yield pkg, name, f, text, setting_dict

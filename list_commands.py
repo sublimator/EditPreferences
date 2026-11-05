@@ -51,7 +51,7 @@ class ListCommands(sublime_plugin.WindowCommand):
                         cmd
                     )]
                 except Exception as e:
-                    print ("ListCommands error", cmd, e)
+                    print("EditPreferences: list_commands: skipping %s: %s" % (cmd, e))
 
         commands.sort(key=lambda i:i[0])
         display = ['/'.join(i[0]) for i in commands]
@@ -75,7 +75,8 @@ class ListCommands(sublime_plugin.WindowCommand):
                     line_num_one_based = inspect.getsourcelines(obj)[-1]
                 except Exception as e:
                     line_num_one_based = 1
-                    print(e)
+                    print("EditPreferences: list_commands: no source line for %s, opening at line 1: %s"
+                          % ('/'.join(cmd[0]), e))
 
                 file_name = os.path.normpath(cmd[1])
                 file_name = package_file_path_to_open_file_path(file_name)
