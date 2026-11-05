@@ -170,7 +170,7 @@ def make_scanner(context):
         try:
             nextchar = string[idx]
         except IndexError:
-            raise StopIteration
+            raise StopIteration(idx)
 
         return_ = None
         if nextchar == '"':
@@ -206,7 +206,7 @@ def make_scanner(context):
         elif nextchar == '-' and string[idx:idx + 9] == '-Infinity':
             return_ = parse_constant('-Infinity'), idx + 9
         else:
-            raise StopIteration
+            raise StopIteration(idx)
         val, ix = return_
         return col_val(val, ix, idx), ix
 

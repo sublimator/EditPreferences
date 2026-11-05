@@ -18,12 +18,19 @@ def glob_and_parse_package_json(pattern):
                     ignored_packages=True,
                     package_sort_key=lambda p: (p!="User", p=="Default", p)):
 
-        text = package_file_contents(f)
-        text = strip_json_comments(text)
+        try:
+            text = strip_json_comments(package_file_contents(f))
+        except Exception as e:
+            print("EditPreferences: couldn't read %s: %s" % (f, e))
+            continue
         if not text: continue
 
         with decode_with_ix():
-            setting_dict = loadsj(text)
+            try:
+                setting_dict = loadsj(text)
+            except Exception as e:
+                print("EditPreferences: couldn't parse %s: %s" % (f, e))
+                continue
 
         yield pkg, name, f, text, setting_dict
 

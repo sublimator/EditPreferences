@@ -13,7 +13,8 @@ import sublime_plugin
 
 class Delay(int): pass
 class Pause: pass
-class Callback: pass
+class RequestCallback: pass
+Callback = RequestCallback  # old name
 class AwaitCallback: pass
 class Cancel: pass
 class Finish: pass
@@ -22,8 +23,8 @@ class Finish: pass
 
 def yields_from(f):
     @functools.wraps(f)
-    def run(*args):
-        routine = f(*args)
+    def run(*args, **kw):
+        routine = f(*args, **kw)
         def routine_send(v):
             try: return routine.send(v)
             except StopIteration: return Finish
@@ -36,7 +37,7 @@ def yields_from(f):
                 except StopIteration:return
             if yielded is None:
                 my_next()
-            elif yielded is Callback:
+            elif yielded is RequestCallback:
                 my_next(routine_send(lambda v: my_next(routine_send(v))))
             elif yielded is Cancel:
                 my_next(routine_send(lambda: my_next(routine_throw())))
@@ -54,7 +55,7 @@ def input_panel(caption="Input:",
                 cancel=Finish ):
 
     panel = sublime.active_window().show_input_panel (
-        caption, '', (yield Callback), None, (yield Cancel))
+        caption, '', (yield RequestCallback), None, (yield Cancel))
     
     panel.run_command('insert_snippet', dict(contents=initial_text))
 
@@ -65,7 +66,7 @@ def input_panel(caption="Input:",
 
 def quick_panel(items, flags=0, selected_index=-1, cancel=Finish):
     show_panel = sublime.active_window().show_quick_panel
-    show_panel( items=items, on_select=(yield Callback), flags=flags,
+    show_panel( items=items, on_select=(yield RequestCallback), flags=flags,
                              selected_index=selected_index )
 
     ix = (yield AwaitCallback)

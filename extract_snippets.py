@@ -41,7 +41,7 @@ class ExtractSnippet(sublime_plugin.TextCommand):
         settings = sublime.load_settings(EXTRACTED_SNIPPETS_SETTING)
 
         contents     = extract_snippet(view, edit)
-        trigger      = "${1:%s}" %  (re.findall('\w+', contents) + [''])[0]
+        trigger      = "${1:%s}" %  (re.findall(r'\w+', contents) + [''])[0]
 
         scope        = scope_as_snippet(view)
         the_snippets = settings.get('extracted_snippets')
@@ -72,7 +72,7 @@ class ExtractedSnippetsCompletions(sublime_plugin.EventListener):
 
         completions = [
             ("%(trigger)s\t(SnippetCompletions)" %  s, s['contents']) for
-             s in load_snippets() if 'scope' not in s or any(
+             s in load_snippets() if 'scope' not in s or s['scope'] is None or any(
              view.match_selector(p, s['scope']) for p in locations) ]
 
         if view.match_selector(locations[0], 'source.js'):
@@ -133,7 +133,7 @@ def load_snippets():
 ########################### INCREMENT TAB STOP HELPES ##########################
 
 def inc_stop(m):
-    return re.sub('\d+', lambda d: str(int(d.group()) + 1), m)
+    return re.sub(r'\d+', lambda d: str(int(d.group()) + 1), m)
 
 def increment_tabstops(s):
     return TAB_STOP.sub(lambda m: inc_stop(m.group()), s)

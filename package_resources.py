@@ -42,7 +42,7 @@ __all__ =  ['PATH_ABSOLUTE',
 ################################### CONSTANTS ##################################
 
 PREFIX_ZIP_PACKAGE_RELATIVE = re.compile("(?P<prefix>.*)/"
-                                         "(?P<package>.*?)\.sublime-package/"
+                                         r"(?P<package>.*?)\.sublime-package/"
                                          "(?P<relative>.*)")
 
 ST2 = sublime.version()[:1] == '2'
@@ -175,7 +175,7 @@ def _package_file_helper(fn, encoding='utf-8', only_exists=False):
             return True # could fall through to zip code
         else:
             if encoding is None: kw = dict(mode='rb')
-            else:                kw = dict(mode='rU', encoding=encoding)
+            else:                kw = dict(mode='r', encoding=encoding)
 
             try:
                 with open(fn, **kw) as fh:
@@ -325,7 +325,7 @@ def glob_packages (
     if isinstance(file_type, str):
         file_type = file_type.replace('%PLATFORM%', platform_specifier())
         if '.' not in file_type:
-            file_type = '.*\.%s$' % file_type
+            file_type = r'.*\.%s$' % file_type
         file_type = re.compile(file_type)
 
     lookup =  create_virtual_package_lookup()

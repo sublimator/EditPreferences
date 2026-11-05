@@ -4,6 +4,7 @@
 # Std Libs
 import inspect
 import os
+import sys
 from linecache import checkcache
 
 # Sublime Libs
@@ -22,14 +23,16 @@ def package_name_and_package_relative_path(p):
 
 class ListCommands(sublime_plugin.WindowCommand):
     def run(self, args=[]):
+        spfresh = sys.modules['sublime_plugin']
+
         window = self.window
         commands = []
         completions = set()
         the_cmds = list(zip(('Application', 'Window', 'Text'),
-                            sublime_plugin.all_command_classes ))
+                            spfresh.all_command_classes ))
 
         the_cmds.extend([ (e, [type(c) for c in h]) for (e, h) in
-                         list(sublime_plugin.all_callbacks.items())])
+                         list(spfresh.all_callbacks.items())])
 
         for cmd_type, cmds in the_cmds:
             cmds = dict( ( plugin_name(t), t) for t in cmds)
@@ -48,7 +51,7 @@ class ListCommands(sublime_plugin.WindowCommand):
                         cmd
                     )]
                 except Exception as e:
-                    print ("ListCommands error", cmd, e)
+                    print("EditPreferences: list_commands: skipping %s: %s" % (cmd, e))
 
         commands.sort(key=lambda i:i[0])
         display = ['/'.join(i[0]) for i in commands]
@@ -64,11 +67,20 @@ class ListCommands(sublime_plugin.WindowCommand):
 
                 obj = (
                     getattr(cmd[-1], cmd_type) if
-                    cmd_type in sublime_plugin.all_callbacks else cmd[-1] )
+                    cmd_type in spfresh.all_callbacks else cmd[-1] )
 
                 checkcache(cmd[1])
 
-                line_num_one_based = inspect.getsourcelines(obj)[-1]
+                # ST4 wraps EventListener methods; __func__ is the original
+                obj = getattr(obj, '__func__', obj)
+
+                try:
+                    line_num_one_based = inspect.getsourcelines(obj)[-1]
+                except Exception as e:
+                    line_num_one_based = 1
+                    print("EditPreferences: list_commands: no source line for %s, opening at line 1: %s"
+                          % ('/'.join(cmd[0]), e))
+
                 file_name = os.path.normpath(cmd[1])
                 file_name = package_file_path_to_open_file_path(file_name)
 
