@@ -72,7 +72,7 @@ class ExtractedSnippetsCompletions(sublime_plugin.EventListener):
 
         completions = [
             ("%(trigger)s\t(SnippetCompletions)" %  s, s['contents']) for
-             s in load_snippets() if 'scope' not in s or any(
+             s in load_snippets() if 'scope' not in s or s['scope'] is None or any(
              view.match_selector(p, s['scope']) for p in locations) ]
 
         if view.match_selector(locations[0], 'source.js'):

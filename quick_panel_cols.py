@@ -107,7 +107,7 @@ def rows_2_columns(rows):
 def rendered_rows(rows, pl=0, pr=CELL_PADDING):
     # render each row as unicode with padded cells to stop them getting lonely
     pad = lambda r: [(pl*' ') + c + (pr*' ') for c in r]
-    return [''.join(pad(r)).replace(' ', '\u00A0') for r in rows]
+    return [''.join(pad(r)) for r in rows]
 
 def commonfolder(m):
     if not m: return ''

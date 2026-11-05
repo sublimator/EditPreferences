@@ -4,6 +4,7 @@
 # Std Libs
 import inspect
 import os
+import sys
 from linecache import checkcache
 
 # Sublime Libs
@@ -22,14 +23,16 @@ def package_name_and_package_relative_path(p):
 
 class ListCommands(sublime_plugin.WindowCommand):
     def run(self, args=[]):
+        spfresh = sys.modules['sublime_plugin']
+
         window = self.window
         commands = []
         completions = set()
         the_cmds = list(zip(('Application', 'Window', 'Text'),
-                            sublime_plugin.all_command_classes ))
+                            spfresh.all_command_classes ))
 
         the_cmds.extend([ (e, [type(c) for c in h]) for (e, h) in
-                         list(sublime_plugin.all_callbacks.items())])
+                         list(spfresh.all_callbacks.items())])
 
         for cmd_type, cmds in the_cmds:
             cmds = dict( ( plugin_name(t), t) for t in cmds)
@@ -64,11 +67,16 @@ class ListCommands(sublime_plugin.WindowCommand):
 
                 obj = (
                     getattr(cmd[-1], cmd_type) if
-                    cmd_type in sublime_plugin.all_callbacks else cmd[-1] )
+                    cmd_type in spfresh.all_callbacks else cmd[-1] )
 
                 checkcache(cmd[1])
 
-                line_num_one_based = inspect.getsourcelines(obj)[-1]
+                try:
+                    line_num_one_based = inspect.getsourcelines(obj)[-1]
+                except Exception as e:
+                    line_num_one_based = 1
+                    print(e)
+
                 file_name = os.path.normpath(cmd[1])
                 file_name = package_file_path_to_open_file_path(file_name)
 

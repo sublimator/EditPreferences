@@ -23,7 +23,11 @@ def glob_and_parse_package_json(pattern):
         if not text: continue
 
         with decode_with_ix():
-            setting_dict = loadsj(text)
+            try:
+                setting_dict = loadsj(text)
+            except Exception as e:
+                print("glob_and_parse_package_json error: ", f, e)
+                continue
 
         yield pkg, name, f, text, setting_dict
 

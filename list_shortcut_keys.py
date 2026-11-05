@@ -11,6 +11,7 @@ from .quick_panel_cols import format_for_display
 from .jsonix import dumps as dumpsj
 
 from .commands_base import EditJSONPreferenceBase
+from .package_resources import platform_specifier
 
 ############################### BINDINGS DISPLAY ###############################
 
@@ -61,8 +62,7 @@ def destructure_bindings(bindings):
 class ListShortcutKeys(EditJSONPreferenceBase):
     format_cols   = (3, 4, 0, )
     extra_rows    = (-2, )
-    platform      = sublime.platform().title()
-    if platform   == 'Osx': platform = 'OSX'
+    platform      = platform_specifier()
     settings_pattern  = r'Default( \(%s\))?.sublime-keymap$' % platform
 
     def on_settings_json(self, pkg, name, f, text, settings_json, completions):
