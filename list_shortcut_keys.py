@@ -4,9 +4,6 @@
 # Std Libs
 import re
 
-# Sublime Libs
-import sublime
-
 from .quick_panel_cols import format_for_display
 from .jsonix import dumps as dumpsj
 

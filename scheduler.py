@@ -14,6 +14,7 @@ import sublime_plugin
 class Delay(int): pass
 class Pause: pass
 class RequestCallback: pass
+Callback = RequestCallback  # old name
 class AwaitCallback: pass
 class Cancel: pass
 class Finish: pass

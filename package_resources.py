@@ -175,7 +175,7 @@ def _package_file_helper(fn, encoding='utf-8', only_exists=False):
             return True # could fall through to zip code
         else:
             if encoding is None: kw = dict(mode='rb')
-            else:                kw = dict(mode='rU', encoding=encoding)
+            else:                kw = dict(mode='r', encoding=encoding)
 
             try:
                 with open(fn, **kw) as fh:

@@ -71,6 +71,9 @@ class ListCommands(sublime_plugin.WindowCommand):
 
                 checkcache(cmd[1])
 
+                # ST4 wraps EventListener methods; __func__ is the original
+                obj = getattr(obj, '__func__', obj)
+
                 try:
                     line_num_one_based = inspect.getsourcelines(obj)[-1]
                 except Exception as e:

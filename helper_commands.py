@@ -49,7 +49,7 @@ class OpenFileEnhanced(sublime_plugin.WindowCommand):
                 sublime.set_timeout(do, 10)
             else:
                 def inner_do():
-                    w = sublime.active_window()
+                    w = open_file_view.window() or window
 
                     if line is not None:
                         open_file_view.run_command (
