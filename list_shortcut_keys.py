@@ -63,7 +63,7 @@ class ListShortcutKeys(EditJSONPreferenceBase):
     extra_rows    = (-2, )
     platform      = sublime.platform().title()
     if platform   == 'Osx': platform = 'OSX'
-    settings_pattern  = 'Default( \(%s\))?.sublime-keymap$' % platform
+    settings_pattern  = r'Default( \(%s\))?.sublime-keymap$' % platform
 
     def on_settings_json(self, pkg, name, f, text, settings_json, completions):
         for keys, command, cargs, scope in destructure_bindings(settings_json):
