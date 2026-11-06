@@ -102,7 +102,7 @@ def columns_2_rows(columns): # [[], [], []]
     return [tuple(a[i] for a in columns) for i in range(len(columns[0]))]
 
 def rows_2_columns(rows):
-    [ [r[i] for r in rows] for i,_ in enumerate(rows[0])]
+    return [ [r[i] for r in rows] for i,_ in enumerate(rows[0])]
 
 def rendered_rows(rows, pl=0, pr=CELL_PADDING):
     # render each row as unicode with padded cells to stop them getting lonely
