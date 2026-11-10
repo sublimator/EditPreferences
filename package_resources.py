@@ -162,7 +162,7 @@ def package_file_path_to_open_file_path(file_name):
 
 ############################ PACKAGE_FILE_* HELPERS ############################
 
-def _package_file_helper(fn, encoding='utf-8', only_exists=False):
+def _package_file_helper(fn, encoding='utf-8-sig', only_exists=False):
     pkg, path, pth_type, _ = decompose_package_file_path(fn)
 
     if pth_type == PATH_CONFIG_RELATIVE:
@@ -199,7 +199,7 @@ def _package_file_helper(fn, encoding='utf-8', only_exists=False):
             else:
                 text = bytes = zh.read(zip_info)
                 if encoding:
-                    text = bytes.decode('utf-8')
+                    text = bytes.decode(encoding)
                 return text
 
 def package_partial(**kw):
